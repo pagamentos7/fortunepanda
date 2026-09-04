@@ -1,720 +1,1060 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dom Pelo - Tônico Capilar para Barba, Cabelo e Sobrancelha</title>
-  <meta name="description" content="Tônico Capilar Dom Pelo: resultados reais em poucas semanas. Barba, cabelo e sobrancelha mais fortes. Compre com Pix e frete grátis." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #15130f;
-      color: #ede6d6;
-      font-family: "Inter", -apple-system, sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-    img { max-width: 100%; display: block; }
-    button { cursor: pointer; border: none; font-family: inherit; }
-    .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fortune Panda</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐼</text></svg>">
+<script>
+window.SITE_CONFIG = {
+  NOME: 'Fortune Panda',
+  COR_TEMA: '#00ff88',
+  BANNER_1: 'https://i.imgur.com/Eell5eS.jpg',
+  BANNER_2: 'https://i.imgur.com/1CX4cRH.jpg',
+  BANNER_3: 'https://i.imgur.com/vc4QeUi.jpg',
+  WHATSAPP: '5511999999999',
+  ADMIN_EMAIL: 'admin@fortune.com',
+  ADMIN_SENHA: 'admin123'
+};
 
-    /* REDLINE */
-    .redline-top {
-      background: linear-gradient(180deg, #c0362c, #8f2620);
-      color: #fff;
-      text-align: center;
-      padding: 8px 14px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    .redline-top span { font-family: monospace; font-weight: 700; font-size: 0.85rem; }
-    .redline-top .frete { color: #7fff7f; }
+fetch('/api/config').then(r=>r.ok?r.json():null).then(c=>{
+  if(c){ window.SITE_CONFIG={...window.SITE_CONFIG,...c}; }
+  SB.url = window.SITE_CONFIG?.SUPABASE_URL || '';
+  SB.key = window.SITE_CONFIG?.SUPABASE_KEY || '';
+}).catch(()=>{});
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --green:#00ff88;
+  --green2:#00cc66;
+  --dark:#080e14;
+  --dark2:#0d1821;
+  --dark3:#1a2535;
+  --dark4:#243044;
+  --red:#ff3b5c;
+  --gold:#ffd700;
+  --text:#e8f0fe;
+  --muted:#7a8fa6;
+}
+html,body{height:100%;background:var(--dark);color:var(--text);font-family:'Outfit',sans-serif;overflow:hidden;}
 
-    /* BOTÃO DOURADO */
-    .btn-gold {
-      display: inline-block;
-      background: linear-gradient(135deg, #f7e05e, #d4a535);
-      color: #1a1509;
-      font-weight: 800;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 14px 28px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      text-align: center;
-      text-decoration: none;
-      width: 100%;
-      animation: floatBtn 3s ease-in-out infinite;
-    }
-    .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(200,155,60,0.3); }
-    @keyframes floatBtn {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .35s;}
+.screen.active{opacity:1;pointer-events:all;}
 
-    /* HERO */
-    .hero-img { width: 100%; aspect-ratio: 4/5; max-height: 460px; object-fit: contain; background: #211d17; }
-    .hero-title { font-size: 2rem; font-weight: 700; text-align: center; margin: 16px 0 4px; font-family: "Fraunces", serif; }
-    .hero-sub { text-align: center; color: #b8af9c; font-size: 0.95rem; margin-bottom: 16px; }
-    .hero-btn { max-width: 320px; margin: 0 auto; }
+@media(min-width:768px){
+  .screen:not(#game-screen):not(#game-drop-screen):not(#game-mines-screen):not(#game-rocket-screen):not(#game-fruit-screen):not(#game-street-screen){
+    align-items:center;
+    justify-content:flex-start;
+  }
+  .screen:not(#game-screen):not(#game-drop-screen):not(#game-mines-screen):not(#game-rocket-screen):not(#game-fruit-screen):not(#game-street-screen) > div,
+  .screen:not(#game-screen):not(#game-drop-screen):not(#game-mines-screen):not(#game-rocket-screen):not(#game-fruit-screen):not(#game-street-screen) > form {
+    max-width:520px;
+    width:100%;
+  }
+}
 
-    /* DEPOIMENTOS */
-    .depo-header { text-align: center; margin: 30px 0 16px; }
-    .depo-header h2 { font-size: 1.5rem; font-family: "Fraunces", serif; }
-    .depo-header p { color: #b8af9c; font-size: 0.9rem; }
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(0,255,136,.07) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(0,200,255,.05) 0%,transparent 60%);pointer-events:none;}
 
-    .depo-box {
-      background: #211d17;
-      border: 1px solid #3a3226;
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .depo-box img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
-    .depo-box .body { padding: 16px 18px; }
-    .depo-box .stars { color: #e0b856; letter-spacing: 2px; font-size: 0.85rem; }
-    .depo-box p { color: #b8af9c; font-style: italic; font-size: 0.9rem; margin: 6px 0 8px; }
-    .depo-box .autor { font-family: monospace; font-size: 0.7rem; color: #ede6d6; }
+.logo-wrap{display:flex;align-items:center;gap:8px;white-space:nowrap;flex-wrap:nowrap;}
+.logo-emoji{font-size:26px;line-height:1;flex-shrink:0;}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;background:linear-gradient(135deg,var(--green),#00ccff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;flex-shrink:0;}
+.logo-sub{font-size:11px;letter-spacing:6px;color:var(--muted);text-transform:uppercase;margin-bottom:32px;}
 
-    /* OFERTAS */
-    .section-title { text-align: center; font-size: 1.6rem; font-family: "Fraunces", serif; margin: 32px 0 4px; }
-    .section-sub { text-align: center; color: #b8af9c; font-size: 0.9rem; margin-bottom: 20px; }
+.card{background:var(--dark2);border:1px solid rgba(0,255,136,.15);border-radius:20px;padding:32px;width:100%;max-width:420px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.field input{width:100%;background:var(--dark3);border:1px solid var(--dark4);border-radius:10px;padding:13px 16px;color:var(--text);font-size:15px;font-family:'Outfit',sans-serif;outline:none;transition:border .2s;}
+.field input:focus{border-color:var(--green);}
+.field .err{font-size:11px;color:var(--red);margin-top:4px;display:none;}
+.field.has-err input{border-color:var(--red);}
+.field.has-err .err{display:block;}
 
-    .offer-card {
-      background: #211d17;
-      border: 1px solid #3a3226;
-      border-radius: 16px;
-      padding: 16px 18px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .offer-card.destaque { border-color: #e0b856; background: #1f1b15; }
-    .offer-card .img { width: 80px; height: 80px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #2a241c; }
-    .offer-card .img img { width: 100%; height: 100%; object-fit: contain; }
-    .offer-card .info { flex: 1; min-width: 120px; }
-    .offer-card .info h3 { font-size: 0.95rem; font-family: "Fraunces", serif; margin-bottom: 2px; }
-    .offer-card .info .tag { font-family: monospace; font-size: 0.55rem; color: #e0b856; background: #2a241c; padding: 2px 8px; border-radius: 999px; display: inline-block; }
-    .offer-card .preco { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-    .offer-card .preco .old { font-size: 0.75rem; color: #b8af9c; text-decoration: line-through; text-decoration-color: #c1584a; }
-    .offer-card .preco .new { font-size: 1.4rem; font-weight: 700; color: #fff; font-family: "Fraunces", serif; }
-    .offer-card .preco .desc { font-family: monospace; font-size: 0.6rem; color: #5c8a63; background: #1c2a1d; padding: 2px 8px; border-radius: 999px; }
-    .offer-card .action { margin-left: auto; flex-shrink: 0; }
-    .offer-card .action .btn-gold { padding: 10px 18px; font-size: 0.7rem; width: auto; min-width: 90px; }
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#000;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,255,136,.3);}
+.btn-ghost{background:transparent;border:1px solid var(--dark4);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--green);color:var(--green);}
+.link{color:var(--green);cursor:pointer;font-size:14px;text-decoration:none;}
+.link:hover{text-decoration:underline;}
+.row-link{text-align:center;margin-top:20px;font-size:14px;color:var(--muted);}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--dark4);}
+.terms-wrap{display:flex;align-items:flex-start;gap:10px;margin:16px 0;}
+.terms-wrap input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0;margin-top:2px;}
+.terms-wrap label{font-size:13px;color:var(--muted);line-height:1.5;}
 
-    /* MOTIVOS - 4 CARDS */
-    .motivos-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 20px 0;
-    }
-    @media (max-width: 480px) {
-      .motivos-grid { grid-template-columns: 1fr; }
-    }
-    .motivo-card {
-      background: #211d17;
-      border: 1px solid #3a3226;
-      border-radius: 16px;
-      padding: 18px 16px;
-      text-align: center;
-      transition: border-color 0.3s;
-    }
-    .motivo-card:hover { border-color: #e0b856; }
-    .motivo-card .icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
-    .motivo-card h4 { font-size: 0.9rem; font-family: "Fraunces", serif; margin-bottom: 4px; }
-    .motivo-card p { color: #b8af9c; font-size: 0.8rem; margin-bottom: 10px; }
-    .motivo-card .btn-gold { padding: 10px 14px; font-size: 0.65rem; width: 100%; }
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:999;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--dark2);border:1px solid rgba(0,255,136,.2);border-radius:20px;padding:28px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-box h3{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green);letter-spacing:2px;margin-bottom:16px;}
+.modal-box p,.modal-box li{font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:8px;}
+.modal-box li{margin-left:16px;}
+.modal-close{margin-top:20px;}
 
-    /* FAQ */
-    .faq-item {
-      border: 1px solid #3a3226;
-      border-radius: 8px;
-      margin-bottom: 4px;
-      overflow: hidden;
-    }
-    .faq-item summary {
-      padding: 14px 16px;
-      font-weight: 600;
-      color: #b8af9c;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-    .faq-item summary::-webkit-details-marker { display: none; }
-    .faq-item summary::after { content: "+"; font-family: monospace; color: #b8af9c; font-size: 1.1rem; }
-    .faq-item[open] summary::after { content: "–"; }
-    .faq-item[open] { border-color: #e0b856; }
-    .faq-item[open] summary { color: #e0b856; }
-    .faq-item .content { padding: 0 16px 16px; color: #b8af9c; font-size: 0.85rem; }
+.tab-bar{display:flex;gap:10px;margin-bottom:20px;}
+.tab-btn{flex:1;padding:10px;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:var(--dark3);color:var(--muted);transition:all .2s;font-family:'Outfit',sans-serif;}
+.tab-btn.active{background:var(--green);color:#000;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
 
-    /* CTA FINAL */
-    .cta-final { text-align: center; margin: 30px 0 20px; }
-    .cta-final .btn-gold { max-width: 380px; padding: 18px 40px; font-size: 1.1rem; }
+.dep-grid-top{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;align-items:stretch;}
+.dep-grid-bot{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:stretch;}
+.dep-card{background:var(--dark3);border:1.5px solid var(--dark4);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:62px;}
+.dep-card:hover,.dep-card.selected{border-color:var(--green);background:rgba(0,255,136,.07);}
+.dep-card span{font-size:17px;font-weight:700;color:var(--text);}
+.dep-card.hot{background:linear-gradient(135deg,#ff4500,#ff8c00);border-color:#ff6b35;animation:pulse-hot 2s infinite;}
+.dep-card.hot span{color:#fff;}
+.hot-badge{font-size:9px;color:#ff8855;letter-spacing:.5px;text-align:center;margin-bottom:3px;font-weight:700;display:block;}
+@keyframes pulse-hot{0%,100%{box-shadow:0 0 0 0 rgba(255,80,30,.4);}50%{box-shadow:0 0 16px 4px rgba(255,80,30,.3);}}
 
-    footer { text-align: center; padding: 30px 0; color: #b8af9c; font-size: 0.7rem; opacity: 0.5; }
+.games-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  width:100%;
+  max-width:480px;
+  margin:8px auto 12px;
+}
+.game-card{
+  background:var(--dark2);
+  border:2px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  cursor:pointer;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  aspect-ratio:1080/1350;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.game-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+  transition:transform .3s ease;
+}
+.game-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--green);
+  box-shadow:0 8px 30px rgba(0,255,136,.12);
+}
+.game-card:hover img{transform:scale(1.03);}
+.game-card .g-badge{
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:var(--green);
+  color:#000;
+  font-size:7px;
+  font-weight:800;
+  padding:3px 10px;
+  border-radius:99px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  z-index:2;
+}
+.game-card .g-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,transparent 30%,rgba(0,0,0,.4) 100%);
+  pointer-events:none;
+  border-radius:12px;
+}
 
-    /* MODAL */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(10,9,6,0.75);
-      display: none; align-items: flex-end; justify-content: center;
-      z-index: 100; backdrop-filter: blur(4px);
-    }
-    .modal-overlay.is-open { display: flex; }
-    @media (min-width: 640px) { .modal-overlay { align-items: center; } }
-    .modal {
-      background: #211d17; border: 1px solid #3a3226;
-      border-radius: 22px 22px 0 0; width: 100%; max-width: 480px;
-      max-height: 92vh; overflow-y: auto; padding: 26px 22px 30px;
-      position: relative;
-    }
-    @media (min-width: 640px) { .modal { border-radius: 16px; } }
-    .modal__close {
-      position: absolute; top: 16px; right: 16px;
-      background: #2a241c; border: 1px solid #3a3226;
-      width: 34px; height: 34px; border-radius: 50%;
-      color: #ede6d6; font-size: 1.1rem; cursor: pointer;
-    }
-    .modal__steps { display: flex; gap: 6px; margin-bottom: 20px; }
-    .modal__steps span { flex: 1; height: 3px; border-radius: 3px; background: #3a3226; }
-    .modal__steps span.is-active, .modal__steps span.is-done { background: #e0b856; }
-    .modal h2 { font-size: 1.3rem; font-family: "Fraunces", serif; margin-bottom: 4px; }
-    .modal .lede { color: #b8af9c; font-size: 0.9rem; margin-bottom: 20px; }
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: 0.8rem; color: #b8af9c; margin-bottom: 6px; font-family: monospace; }
-    .field input {
-      width: 100%; background: #15130f; border: 1px solid #3a3226;
-      border-radius: 8px; padding: 13px 14px; color: #ede6d6;
-      font-size: 0.98rem;
-    }
-    .field input:focus { outline: 2px solid #e0b856; border-color: #e0b856; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .field-error { color: #c1584a; font-size: 0.78rem; margin-top: 6px; display: none; }
-    .field.has-error input { border-color: #c1584a; }
-    .field.has-error .field-error { display: block; }
-    .product-pick { display: grid; gap: 10px; margin-bottom: 18px; }
-    .product-option {
-      display: flex; justify-content: space-between; align-items: center;
-      border: 1px solid #3a3226; border-radius: 14px;
-      padding: 14px 16px; cursor: pointer;
-    }
-    .product-option.is-selected { border-color: #e0b856; background: #2a241c; }
-    .product-option strong { display: block; font-size: 0.92rem; }
-    .product-option span { color: #b8af9c; font-size: 0.8rem; }
-    .product-option .price { color: #e0b856; font-family: monospace; font-weight: 600; }
-    .pix-box { text-align: center; }
-    .pix-box img { width: 200px; height: 200px; margin: 0 auto 18px; border-radius: 8px; background: #fff; padding: 10px; }
-    .pix-copia { display: flex; gap: 8px; background: #15130f; border: 1px solid #3a3226; border-radius: 8px; padding: 10px 12px; margin-bottom: 16px; }
-    .pix-copia input { flex: 1; background: transparent; border: none; color: #b8af9c; font-family: monospace; font-size: 0.75rem; }
-    .pix-copia button { background: #2a241c; border: 1px solid #3a3226; color: #ede6d6; border-radius: 8px; padding: 0 12px; font-size: 0.78rem; cursor: pointer; }
-    .pix-status { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: monospace; font-size: 0.82rem; color: #b8af9c; margin-top: 6px; }
-    .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #3a3226; border-top-color: #e0b856; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .success-box { text-align: center; }
-    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: #1c2a1d; color: #5c8a63; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 2rem; }
-    .order-id { font-family: monospace; background: #15130f; border: 1px solid #3a3226; border-radius: 8px; padding: 12px; font-size: 0.85rem; margin: 16px 0; word-break: break-all; }
-    .modal-alert { font-size: 0.85rem; color: #c1584a; margin-top: 10px; display: none; }
-    .modal-alert.is-visible { display: block; }
-    .disclaimer { margin-top: 20px; font-size: 0.7rem; color: #b8af9c; opacity: 0.5; text-align: center; }
-  </style>
+.admin-card{background:var(--dark3);border-radius:12px;padding:16px;margin-bottom:12px;}
+.admin-card .row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.admin-card .row:last-child{border-bottom:none;}
+.admin-card .label{font-size:12px;color:var(--muted);}
+.admin-card .value{font-weight:700;color:var(--text);}
+.admin-input{background:var(--dark4);border:1px solid var(--dark3);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;width:100%;font-family:'Outfit',sans-serif;outline:none;}
+.admin-input:focus{border-color:var(--green);}
+.admin-btn{background:var(--green);color:#000;border:none;border-radius:8px;padding:8px 16px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.admin-btn:hover{transform:scale(1.03);}
+
+.saque-regras{
+  background:rgba(255,215,0,.06);
+  border:1px solid rgba(255,215,0,.2);
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:16px;
+}
+.saque-regras .titulo{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.saque-regras .item{font-size:11px;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:8px;}
+.saque-regras .item .check{color:var(--green);}
+.saque-regras .item .x{color:var(--red);}
+</style>
 </head>
 <body>
 
-<!-- REDLINE -->
-<div class="redline-top">
-  <span>🔥 KIT 2 UNIDADES POR R$ 23,99 + <span class="frete">FRETE GRÁTIS</span> ⭐ 5.000+ APROVARAM</span>
-</div>
-
-<!-- HERO -->
-<img class="hero-img" src="https://i.imgur.com/AVwfoLu.jpg" alt="Dom Pelo" onerror="this.style.display='none'" />
-<div class="container">
-  <h1 class="hero-title">O tônico que transforma sua barba</h1>
-  <p class="hero-sub">Resultados reais em semanas. Barba, cabelo e sobrancelha mais fortes.</p>
-  <div class="hero-btn">
-    <a href="#kits" class="btn-gold" style="display:block; text-decoration:none;">🔥 QUERO MUDAR MINHA AUTOESTIMA</a>
-  </div>
-</div>
-
-<!-- DEPOIMENTOS -->
-<div class="container">
-  <div class="depo-header">
-    <h2>O que eles estão dizendo</h2>
-    <p>Homens que mudaram a autoestima</p>
-  </div>
-  <div class="depo-box">
-    <img src="https://i.imgur.com/11YaYkd.jpg" alt="Lucas" />
-    <div class="body">
-      <span class="stars">★★★★★</span>
-      <p>“Minha autoestima mudou demais. A barba preencheu e hoje me sinto muito mais confiante!”</p>
-      <div class="autor"><strong>Lucas Ferreira</strong> — Campinas, SP</div>
-    </div>
-  </div>
-  <div class="depo-box">
-    <img src="https://i.imgur.com/NyI92CQ.jpg" alt="Matheus" />
-    <div class="body">
-      <span class="stars">★★★★★</span>
-      <p>“Mudou minha confiança no dia a dia. Hoje converso e chego nas mulheres sem insegurança!”</p>
-      <div class="autor"><strong>Matheus Oliveira</strong> — Belo Horizonte, MG</div>
-    </div>
-  </div>
-  <div class="depo-box">
-    <img src="https://i.imgur.com/CTgMRdN.jpg" alt="Rafael" />
-    <div class="body">
-      <span class="stars">★★★★★</span>
-      <p>“Não imaginava que uma barba pudesse mudar tanto minha aparência e autoestima!”</p>
-      <div class="autor"><strong>Rafael Santos</strong> — Curitiba, PR</div>
-    </div>
-  </div>
-</div>
-
-<!-- KITS / OFERTAS -->
-<div class="container" id="kits">
-  <h2 class="section-title">Escolha seu kit</h2>
-  <p class="section-sub">Oferta por tempo limitado – estoque reduzido</p>
-
-  <div class="offer-card destaque">
-    <div class="img"><img src="https://i.imgur.com/aHOsVAr.jpg" alt="Kit 2" /></div>
-    <div class="info">
-      <h3>Kit 2 unidades</h3>
-      <span class="tag">⭐ mais vendido</span>
-      <div class="preco">
-        <span class="old">R$ 59,99</span>
-        <span class="new">R$ 23,99</span>
-        <span class="desc">60% OFF</span>
-      </div>
-    </div>
-    <div class="action">
-      <button class="btn-gold" data-open-checkout data-produto="kit2">COMPRAR</button>
-    </div>
-  </div>
-
-  <div class="offer-card">
-    <div class="img"><img src="https://i.imgur.com/qKtBVKD.jpg" alt="Kit 5" /></div>
-    <div class="info">
-      <h3>Kit 5 unidades</h3>
-      <span class="tag">📦 + frete grátis</span>
-      <div class="preco">
-        <span class="old">R$ 94,24</span>
-        <span class="new">R$ 47,12</span>
-        <span class="desc">50% OFF</span>
-      </div>
-    </div>
-    <div class="action">
-      <button class="btn-gold" data-open-checkout data-produto="kit5">COMPRAR</button>
-    </div>
-  </div>
-
-  <div class="offer-card" style="border-color:#e0b856;">
-    <div class="img"><img src="https://i.imgur.com/z8je7y1.jpg" alt="Kit 10" /></div>
-    <div class="info">
-      <h3>Kit 10 unidades</h3>
-      <span class="tag">✂️ kit para barbearia</span>
-      <div class="preco">
-        <span class="old">R$ 159,90</span>
-        <span class="new">R$ 79,95</span>
-        <span class="desc">50% OFF</span>
-      </div>
-    </div>
-    <div class="action">
-      <button class="btn-gold" data-open-checkout data-produto="kit10">COMPRAR</button>
-    </div>
-  </div>
-
-  <div class="offer-card" style="border-color:#e0b856;">
-    <div class="img"><img src="https://i.imgur.com/ap1qtoH.jpg" alt="Kit 20" /></div>
-    <div class="info">
-      <h3>Kit 20 unidades</h3>
-      <span class="tag">💰 kit de revendedor</span>
-      <div class="preco">
-        <span class="old">R$ 282,72</span>
-        <span class="new">R$ 141,36</span>
-        <span class="desc">50% OFF</span>
-      </div>
-    </div>
-    <div class="action">
-      <button class="btn-gold" data-open-checkout data-produto="kit20">COMPRAR</button>
-    </div>
-  </div>
-</div>
-
-<!-- MOTIVOS - 4 CARDS COM BOTÃO -->
-<div class="container">
-  <h2 class="section-title">🔥 Por que comprar agora?</h2>
-  <p class="section-sub">Motivos que fazem do Dom Pelo o favorito de milhares de homens</p>
-
-  <div class="motivos-grid">
-    <div class="motivo-card">
-      <span class="icon">📈</span>
-      <h4>Resultados em semanas</h4>
-      <p>Barba mais cheia e fios mais fortes em pouco tempo de uso.</p>
-      <button class="btn-gold" data-open-checkout data-produto="kit2">QUERO ESSE</button>
-    </div>
-
-    <div class="motivo-card">
-      <span class="icon">🚚</span>
-      <h4>Frete grátis</h4>
-      <p>Envio rápido via JadLog. Seu pedido chega sem custo extra.</p>
-      <button class="btn-gold" data-open-checkout data-produto="kit2">COMPRAR</button>
-    </div>
-
-    <div class="motivo-card" style="border-color:#e0b856;">
-      <span class="icon">💰</span>
-      <h4>Kit Revendedor</h4>
-      <p>20 unidades por R$ 141,36 — menos de R$ 8 por frasco!</p>
-      <button class="btn-gold" data-open-checkout data-produto="kit20">REVENDER</button>
-    </div>
-
-    <div class="motivo-card" style="border-color:#e0b856;">
-      <span class="icon">✂️</span>
-      <h4>Kit Barbearia</h4>
-      <p>10 unidades por R$ 79,95. Tenha sempre em mãos para clientes.</p>
-      <button class="btn-gold" data-open-checkout data-produto="kit10">BARBEARIA</button>
-    </div>
-  </div>
-</div>
-
-<!-- CTA FINAL -->
-<div class="container">
-  <div class="cta-final">
-    <p style="color:#b8af9c; margin-bottom:12px; font-size:1rem;">⚡ <strong style="color:#fff;">Oferta por tempo limitado</strong> — estoque reduzido!</p>
-    <a href="#kits" class="btn-gold" style="display:inline-block; text-decoration:none; padding:18px 50px; font-size:1.1rem;">🔥 QUERO GARANTIR O MEU KIT AGORA</a>
-  </div>
-</div>
-
-<!-- FAQ -->
-<div class="container" style="margin-top:20px;">
-  <h2 class="section-title" style="font-size:1.3rem;">Dúvidas frequentes</h2>
-  <details class="faq-item" open>
-    <summary>Como funciona a entrega?</summary>
-    <div class="content">Pagamento confirmado = pedido separado imediatamente. Você recebe código de rastreio da JadLog.</div>
-  </details>
-  <details class="faq-item">
-    <summary>O Pix é seguro?</summary>
-    <div class="content">Sim! O Pix é a forma mais segura do Brasil, reconhecida pelo Banco Central.</div>
-  </details>
-  <details class="faq-item">
-    <summary>Prazo de entrega?</summary>
-    <div class="content">De 3 a 7 dias úteis, com rastreio em tempo real.</div>
-  </details>
-  <details class="faq-item">
-    <summary>Por que o preço é tão baixo?</summary>
-    <div class="content">Compramos direto do fabricante e repassamos a economia para você.</div>
-  </details>
-  <p class="disclaimer">Tônico Capilar Dom Pelo é um cosmético para cuidado diário dos fios. Resultados variam de pessoa pra pessoa.</p>
-</div>
-
-<footer>
-  <div class="container">Dom Pelo – Pagamento seguro via Pix. Entregas via JadLog.</div>
-</footer>
-
-<!-- MODAL CHECKOUT -->
-<div class="modal-overlay" id="checkoutOverlay">
-  <div class="modal">
-    <button class="modal__close" id="checkoutClose">✕</button>
-    <div class="modal__steps"><span id="stepDot1"></span><span id="stepDot2"></span><span id="stepDot3"></span></div>
-
-    <div id="phaseDados">
-      <h2>Seus dados</h2>
-      <p class="lede">Sem conta, sem senha. Só o necessário pra enviar seu pedido.</p>
-      <div class="product-pick">
-        <label class="product-option" data-produto="kit2"><div><strong>Kit 2 unidades</strong><span>120ml cada</span></div><span class="price">R$ 23,99</span></label>
-        <label class="product-option" data-produto="kit5"><div><strong>Kit 5 unidades</strong><span>120ml cada</span></div><span class="price">R$ 47,12</span></label>
-        <label class="product-option" data-produto="kit10"><div><strong>Kit 10 unidades</strong><span>120ml cada</span></div><span class="price">R$ 79,95</span></label>
-        <label class="product-option" data-produto="kit20"><div><strong>Kit 20 unidades</strong><span>120ml cada</span></div><span class="price">R$ 141,36</span></label>
-      </div>
-      <div class="field"><label for="fNome">Nome completo</label><input id="fNome" type="text" /><span class="field-error">Informe seu nome completo.</span></div>
-      <div class="field"><label for="fCpf">CPF</label><input id="fCpf" type="text" maxlength="14" placeholder="000.000.000-00" /><span class="field-error">CPF inválido.</span></div>
-      <div class="field"><label for="fTelefone">Telefone (com DDD)</label><input id="fTelefone" type="tel" placeholder="(00) 00000-0000" /><span class="field-error">Telefone inválido.</span></div>
-      <div class="field-row">
-        <div class="field"><label for="fCep">CEP</label><input id="fCep" type="text" maxlength="9" placeholder="00000-000" /></div>
-        <div class="field"><label for="fNumero">Número</label><input id="fNumero" type="text" /></div>
-      </div>
-      <div class="field"><label for="fRua">Rua</label><input id="fRua" type="text" /></div>
-      <div class="field-row">
-        <div class="field"><label for="fBairro">Bairro</label><input id="fBairro" type="text" /></div>
-        <div class="field"><label for="fCidade">Cidade</label><input id="fCidade" type="text" /></div>
-      </div>
-      <div class="field"><label for="fComplemento">Complemento (opcional)</label><input id="fComplemento" type="text" /></div>
-      <p class="modal-alert" id="dadosAlert"></p>
-      <button class="btn-gold" id="btnIrPagamento" style="width:100%; margin-top:8px;">CONTINUAR</button>
-    </div>
-
-    <div id="phasePix" style="display:none;">
-      <h2>Pagar com Pix</h2>
-      <p class="lede">Escaneie o QR ou use o código copia e cola.</p>
-      <div class="pix-box">
-        <img id="pixQr" src="" alt="QR Code" />
-        <div class="pix-copia"><input id="pixCopiaCola" readonly /><button id="btnCopiarPix">Copiar</button></div>
-        <div class="pix-status"><span class="spinner"></span> Aguardando pagamento…</div>
+<!-- ===== LOGIN ===== -->
+<div class="screen active" id="login-screen" style="padding:0;justify-content:flex-start;overflow-y:auto;">
+  <div style="width:100%;max-width:480px;margin:0 auto;padding:0;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px 8px;">
+      <div class="logo-wrap"><span class="logo-emoji">🐼</span><span class="logo-text">FORTUNE PANDA</span></div>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <button class="btn btn-ghost" onclick="abrirModalCadastro()" style="padding:8px 14px;font-size:12px;width:auto;">CADASTRAR</button>
+        <button class="btn btn-primary" onclick="abrirModalLogin()" style="padding:8px 14px;font-size:12px;width:auto;">ENTRAR</button>
       </div>
     </div>
 
-    <div id="phaseSucesso" style="display:none;">
-      <div class="success-box">
-        <div class="success-icon">✓</div>
-        <h2>Pagamento confirmado!</h2>
-        <p class="lede">Seu pedido já está sendo preparado para envio.</p>
-        <div class="order-id" id="orderIdDisplay"></div>
-        <button class="btn-gold" id="btnFecharSucesso" style="width:100%;">FECHAR</button>
+    <!-- BANNER -->
+    <div style="position:relative;width:100%;overflow:hidden;">
+      <div id="banner-track" style="display:flex;transition:transform .7s cubic-bezier(.77,0,.18,1);will-change:transform;">
+        <div style="min-width:100%;height:0;padding-bottom:38.5%;position:relative;overflow:hidden;"><img src="https://i.imgur.com/Eell5eS.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a2535,#243044)'"></div>
+        <div style="min-width:100%;height:0;padding-bottom:38.5%;position:relative;overflow:hidden;"><img src="https://i.imgur.com/1CX4cRH.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='linear-gradient(135deg,#243044,#1a3520)'"></div>
+        <div style="min-width:100%;height:0;padding-bottom:38.5%;position:relative;overflow:hidden;"><img src="https://i.imgur.com/vc4QeUi.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='linear-gradient(135deg,#2a1520,#1a2535)'"></div>
+      </div>
+      <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;" id="banner-dots">
+        <div class="bdot active" style="width:20px;height:4px;border-radius:2px;background:var(--green);transition:all .4s;"></div>
+        <div class="bdot" style="width:8px;height:4px;border-radius:2px;background:rgba(255,255,255,.3);transition:all .4s;"></div>
+        <div class="bdot" style="width:8px;height:4px;border-radius:2px;background:rgba(255,255,255,.3);transition:all .4s;"></div>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(90deg,var(--dark),rgba(0,255,136,.08),var(--dark));border-top:1px solid rgba(0,255,136,.15);border-bottom:1px solid rgba(0,255,136,.15);overflow:hidden;height:52px;display:flex;align-items:center;">
+      <div id="ticker-wrap" style="display:flex;align-items:center;white-space:nowrap;will-change:transform;"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dark3);margin-top:1px;">
+      <div style="background:var(--dark2);padding:14px 8px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);">47.832</div><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">JOGADORES</div></div>
+      <div style="background:var(--dark2);padding:14px 8px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);"><span id="pagos-hoje-valor">R$ 0,00</span></div><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">PAGOS HOJE</div></div>
+      <div style="background:var(--dark2);padding:14px 8px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);">100%</div><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">HABILIDADE</div></div>
+    </div>
+
+    <!-- GRADE DE JOGOS (APENAS REDIRECIONAMENTOS) -->
+    <div style="margin:12px 12px 8px;">
+      <div class="games-grid">
+        <div class="game-card" onclick="window.location.href='/sky-climb'">
+          <img src="https://i.imgur.com/mjp2yRm.jpg" alt="Sky Climb" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/sugar-smash'">
+          <img src="https://i.imgur.com/C9dOlVh.jpg" alt="Sugar Smash" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/mines'">
+          <img src="https://i.imgur.com/LFLItEn.jpg" alt="Mines" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/rocket-rush'">
+          <img src="https://i.imgur.com/L7cXE5z.jpg" alt="Rocket Rush" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/fruit-strike'">
+          <img src="https://i.imgur.com/1nWGVqa.jpg" alt="Fruit Strike" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/panda-run'">
+          <img src="https://i.imgur.com/tJfFcw4.jpg" alt="Panda Run" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/tower'">
+          <img src="https://i.imgur.com/jFzxRN7.jpg" alt="Tower" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/double'">
+          <img src="https://i.imgur.com/BTrNyrE.jpg" alt="Double" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/baccarat'">
+          <img src="https://i.imgur.com/d30T25U.jpg" alt="Baccarat" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL CONSULTA -->
-<div class="modal-overlay" id="consultaOverlay">
-  <div class="modal">
-    <button class="modal__close" id="consultaClose">✕</button>
-    <h2>Consultar pedido</h2>
-    <p class="lede">Informe o CPF e o número do pedido.</p>
-    <div class="field"><label for="cCpf">CPF</label><input id="cCpf" type="text" placeholder="000.000.000-00" /></div>
-    <div class="field"><label for="cPedido">Número do pedido</label><input id="cPedido" type="text" /></div>
-    <p class="modal-alert" id="consultaAlert"></p>
-    <button class="btn-gold" id="btnBuscarPedido" style="width:100%;">BUSCAR</button>
-    <div id="consultaResultado" style="margin-top:18px;"></div>
+<!-- ===== MENU ===== -->
+<div class="screen" id="menu-screen" style="padding:0;justify-content:flex-start;overflow-y:auto;">
+  <div style="width:100%;max-width:480px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px;">
+      <div><div class="logo-wrap"><span class="logo-emoji" style="font-size:28px;">🐼</span><span class="logo-text" style="font-size:30px;">FORTUNE PANDA</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-size:10px;color:var(--muted);">ID: <span id="menu-userid" style="font-family:monospace;color:var(--green);letter-spacing:1px;">-----</span></div>
+          <button onclick="fazerLogout()" title="Sair da conta" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:2px 4px;line-height:1;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'">↩ Sair</button>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;">Seu Saldo</div>
+        <div id="menu-saldo" style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--green);line-height:1.1;">R$ 0,00</div>
+        <div style="display:flex;gap:6px;margin-top:4px;justify-content:flex-end;">
+          <button onclick="go('deposit-screen')" style="background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);border-radius:8px;padding:4px 10px;color:var(--green);font-size:10px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;">+ DEPOSITAR</button>
+          <button onclick="abrirSaque()" style="background:var(--dark3);border:1px solid var(--dark4);border-radius:8px;padding:4px 10px;color:var(--muted);font-size:10px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;">💸 SACAR</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative;width:100%;overflow:hidden;">
+      <div id="menu-banner-track" style="display:flex;transition:transform .7s cubic-bezier(.77,0,.18,1);will-change:transform;">
+        <div style="min-width:100%;height:0;padding-bottom:38.5%;position:relative;overflow:hidden;"><img src="https://i.imgur.com/Eell5eS.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='linear-gradient(135deg,#1a2535,#243044)'"></div>
+        <div style="min-width:100%;height:0;padding-bottom:38.5%;position:relative;overflow:hidden;"><img src="https://i.imgur.com/1CX4cRH.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='linear-gradient(135deg,#243044,#1a3520)'"></div>
+        <div style="min-width:100%;height:0;padding-bottom:38.5%;position:relative;overflow:hidden;"><img src="https://i.imgur.com/vc4QeUi.jpg" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.background='linear-gradient(135deg,#2a1520,#1a2535)'"></div>
+      </div>
+      <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;" id="menu-banner-dots">
+        <div class="mbdot" style="width:20px;height:4px;border-radius:2px;background:var(--green);transition:all .4s;"></div>
+        <div class="mbdot" style="width:8px;height:4px;border-radius:2px;background:rgba(255,255,255,.3);transition:all .4s;"></div>
+        <div class="mbdot" style="width:8px;height:4px;border-radius:2px;background:rgba(255,255,255,.3);transition:all .4s;"></div>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(90deg,var(--dark),rgba(0,255,136,.08),var(--dark));border-top:1px solid rgba(0,255,136,.15);border-bottom:1px solid rgba(0,255,136,.15);overflow:hidden;height:52px;display:flex;align-items:center;">
+      <div id="menu-ticker-wrap" style="display:flex;align-items:center;white-space:nowrap;will-change:transform;"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dark3);margin-top:1px;">
+      <div style="background:var(--dark2);padding:12px 8px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green);">47.832</div><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">JOGADORES</div></div>
+      <div style="background:var(--dark2);padding:12px 8px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);"><span id="pagos-hoje-valor-menu">R$ 0,00</span></div><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">PAGOS HOJE</div></div>
+      <div style="background:var(--dark2);padding:12px 8px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green);">100%</div><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;">HABILIDADE</div></div>
+    </div>
+
+    <!-- GRADE DE JOGOS NO MENU (APENAS REDIRECIONAMENTOS) -->
+    <div style="margin:12px 12px 8px;">
+      <div class="games-grid">
+        <div class="game-card" onclick="window.location.href='/sky-climb'">
+          <img src="https://i.imgur.com/mjp2yRm.jpg" alt="Sky Climb" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/sugar-smash'">
+          <img src="https://i.imgur.com/C9dOlVh.jpg" alt="Sugar Smash" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/mines'">
+          <img src="https://i.imgur.com/LFLItEn.jpg" alt="Mines" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/rocket-rush'">
+          <img src="https://i.imgur.com/L7cXE5z.jpg" alt="Rocket Rush" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/fruit-strike'">
+          <img src="https://i.imgur.com/1nWGVqa.jpg" alt="Fruit Strike" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/panda-run'">
+          <img src="https://i.imgur.com/tJfFcw4.jpg" alt="Panda Run" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/tower'">
+          <img src="https://i.imgur.com/jFzxRN7.jpg" alt="Tower" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/double'">
+          <img src="https://i.imgur.com/BTrNyrE.jpg" alt="Double" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/baccarat'">
+          <img src="https://i.imgur.com/d30T25U.jpg" alt="Baccarat" loading="lazy">
+          <div class="g-overlay"></div>
+          <div class="g-badge">JOGAR</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="menu-aviso-deposito" style="display:none;margin:12px 16px 0;background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:14px 16px;text-align:center;">
+      <div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px;">💰 Saldo insuficiente para jogar</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Deposite a partir de R$ 1,00 para começar</div>
+      <button onclick="go('deposit-screen')" class="btn btn-primary" style="font-size:13px;padding:12px;">DEPOSITAR AGORA</button>
+    </div>
+
+    <div style="margin:14px 16px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn btn-ghost" onclick="openHistorico()" style="padding:12px;font-size:12px;">📋 Histórico</button>
+      <button class="btn btn-ghost" onclick="openAfiliado()" style="padding:12px;font-size:12px;">🤝 Afiliados</button>
+    </div>
+
+    <div id="menu-admin-painel" style="display:none;margin:10px 16px 0;">
+      <button onclick="go('admin-screen')" style="width:100%;background:linear-gradient(135deg,rgba(255,59,92,.12),rgba(180,0,30,.06));border:1px solid rgba(255,59,92,.3);border-radius:12px;padding:12px;color:var(--red);font-size:13px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;letter-spacing:.5px;">⚙️ PAINEL ADMINISTRATIVO</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SAQUE ===== -->
+<div class="screen" id="saque-screen" style="padding:16px;justify-content:flex-start;overflow-y:auto;">
+  <div style="width:100%;max-width:420px;margin:0 auto;padding:8px 0 40px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <button onclick="go('menu-screen')" style="background:var(--dark3);border:1px solid var(--dark4);border-radius:10px;padding:9px 16px;color:var(--muted);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;">← Voltar</button>
+      <div><div class="logo-wrap"><span class="logo-emoji" style="font-size:22px;">🐼</span><span class="logo-text" style="font-size:26px;">FORTUNE PANDA</span></div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">Solicitar Saque</div>
+      </div>
+    </div>
+    <div style="background:var(--dark2);border:1px solid rgba(0,255,136,.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Saldo disponível para saque</div>
+      <div id="saque-saldo-display" style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--green);line-height:1;">R$ 0,00</div>
+    </div>
+    <div class="saque-regras">
+      <div class="titulo">📋 Condições para saque:</div>
+      <div class="item" id="saque-regra-1"><span class="x">❌</span> Verificar identidade (CPF/Email)</div>
+      <div class="item" id="saque-regra-2"><span class="x">❌</span> Mínimo R$ 50,00 para saque</div>
+      <div class="item" id="saque-regra-3"><span class="x">❌</span> Conta ativa há mais de 7 dias</div>
+    </div>
+    <div id="saque-form" style="display:none;background:var(--dark2);border:1px solid rgba(0,255,136,.15);border-radius:14px;padding:18px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">Sua chave PIX</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Insira a chave PIX onde você quer receber.</div>
+      <input id="saque-chave-pix" type="text" placeholder="CPF, e-mail, celular ou chave aleatória" style="width:100%;background:var(--dark3);border:1px solid var(--dark4);border-radius:10px;padding:13px 14px;color:var(--text);font-size:14px;font-family:'Outfit',sans-serif;outline:none;margin-bottom:14px;">
+      <button onclick="confirmarSaque()" class="btn btn-primary" style="font-size:15px;">📤 SOLICITAR SAQUE</button>
+    </div>
+    <div id="saque-bloqueado" style="display:block;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:14px;padding:18px;text-align:center;">
+      <div style="font-size:32px;margin-bottom:10px;">🔒</div>
+      <div id="saque-bloqueado-msg" style="font-size:13px;color:var(--gold);line-height:1.6;">Complete todas as condições para liberar o saque.</div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.7;margin-top:16px;">ℹ️ O processamento do saque pode demorar até 48hrs em dias úteis.</div>
+  </div>
+</div>
+
+<!-- ===== DEPOSIT ===== -->
+<div class="screen" id="deposit-screen">
+  <div class="logo-wrap" style="margin-bottom:4px;"><span class="logo-emoji">🐼</span><span class="logo-text">FORTUNE PANDA</span></div>
+  <div class="logo-sub">Depositar saldo</div>
+  <div class="card">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;text-align:center;">Escolha o valor que deseja depositar para começar a jogar.</p>
+    <div class="dep-grid-top">
+      <div class="dep-card" onclick="selectDep(10,this)"><span>R$10</span></div>
+      <div class="dep-card" onclick="selectDep(25,this)"><span>R$25</span></div>
+      <div class="dep-card hot" onclick="selectDep(30,this)"><span>R$30</span><div class="hot-badge">MAIS POPULAR</div></div>
+      <div class="dep-card" onclick="selectDep(40,this)"><span>R$40</span></div>
+    </div>
+    <div class="dep-grid-bot">
+      <div class="dep-card" onclick="selectDep(50,this)"><span>R$50</span></div>
+      <div class="dep-card" onclick="selectDep(60,this)"><span>R$60</span></div>
+      <div class="dep-card" onclick="selectDep(70,this)"><span>R$70</span></div>
+      <div class="dep-card" onclick="selectDep(75,this)"><span>R$75</span></div>
+    </div>
+    <div style="margin:20px 0;background:var(--dark3);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;color:var(--muted);">Valor selecionado</span>
+      <span id="dep-selected" style="font-size:20px;font-weight:700;color:var(--green);">R$ --</span>
+    </div>
+    <button class="btn btn-primary" onclick="doDeposit()">DEPOSITAR AGORA</button>
+    <div class="row-link" style="margin-top:12px;"><span class="link" onclick="go('menu-screen')">Fazer depois</span></div>
+  </div>
+</div>
+
+<!-- ===== PIX ===== -->
+<div class="screen" id="pix-screen" style="padding:16px;justify-content:flex-start;overflow-y:auto;">
+  <div style="width:100%;max-width:420px;margin:0 auto;padding-bottom:32px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:8px;">
+      <button onclick="cancelarPix()" style="background:var(--dark3);border:1px solid var(--dark4);border-radius:10px;padding:9px 16px;color:var(--muted);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;">← Voltar</button>
+      <div><div class="logo-wrap"><span class="logo-emoji" style="font-size:22px;">🐼</span><span class="logo-text" style="font-size:26px;">FORTUNE PANDA</span></div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;">Pagamento PIX</div>
+      </div>
+    </div>
+    <div id="pix-loading" style="background:var(--dark2);border:1px solid rgba(0,255,136,.15);border-radius:20px;padding:48px 32px;text-align:center;">
+      <div style="font-size:52px;display:inline-block;animation:spin-slow 1.2s linear infinite;margin-bottom:16px;">⚙️</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;">Gerando seu PIX...</div>
+      <div style="font-size:13px;color:var(--muted);">Conectando ao banco — aguarde um instante</div>
+    </div>
+    <div id="pix-ready" style="display:none;">
+      <div style="background:var(--dark2);border:1px solid rgba(0,255,136,.2);border-radius:20px;padding:20px 22px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div><div style="font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Valor a pagar</div><div id="pix-valor-display" style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--green);line-height:1;">R$ 0,00</div></div>
+          <div style="text-align:right;"><div style="font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Expira em</div><div id="pix-timer" style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);line-height:1;">15:00</div><div style="font-size:9px;color:var(--muted);">minutos</div></div>
+        </div>
+        <div style="background:#ffffff;border-radius:16px;padding:16px;text-align:center;margin-bottom:16px;position:relative;">
+          <div id="pix-qrcode-wrap" style="display:flex;justify-content:center;align-items:center;width:200px;height:200px;margin:0 auto;"></div>
+          <div style="font-size:11px;color:#555;margin-top:10px;font-family:sans-serif;">Escaneie com o app do seu banco</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:14px;margin-bottom:14px;">
+          <div style="font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">PIX Copia e Cola</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div id="pix-copia-texto" style="flex:1;font-size:10px;color:var(--text);word-break:break-all;background:var(--dark4);border-radius:8px;padding:10px;line-height:1.6;max-height:58px;overflow:hidden;"></div>
+            <button id="btn-copiar" onclick="copiarPix()" style="flex-shrink:0;background:linear-gradient(135deg,var(--green),var(--green2));color:#000;border:none;border-radius:10px;padding:11px 13px;font-size:11px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;">📋 COPIAR</button>
+          </div>
+        </div>
+        <div id="pix-status-badge">
+          <div id="pix-aguardando" style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--gold);animation:blink 1.2s ease-in-out infinite;flex-shrink:0;"></div><span style="font-size:13px;color:var(--gold);font-weight:600;">Aguardando pagamento...</span></div>
+            <div style="font-size:11px;color:var(--muted);text-align:center;">Verificando automaticamente a cada 5 segundos</div>
+          </div>
+          <div id="pix-confirmado" style="display:none;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:12px;padding:24px;text-align:center;animation:popIn .4s ease both;">
+            <div style="font-size:44px;margin-bottom:8px;">✅</div>
+            <div style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;">Pagamento confirmado!</div>
+            <div id="pix-confirmado-msg" style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;"></div>
+            <button class="btn btn-primary" onclick="go('menu-screen')" style="font-size:15px;">JOGAR AGORA →</button>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:11px;color:var(--muted);line-height:1.8;">🔒 Pagamento 100% seguro via PIX Banco Central<br>Saldo creditado instantaneamente após confirmação</div>
+    </div>
+    <div id="pix-expirado" style="display:none;background:var(--dark2);border:1px solid rgba(255,59,92,.2);border-radius:20px;padding:44px 32px;text-align:center;">
+      <div style="font-size:52px;margin-bottom:16px;">⏰</div>
+      <div style="font-size:17px;font-weight:700;color:var(--red);margin-bottom:8px;">PIX expirado</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;">O tempo de pagamento se esgotou.<br>Gere um novo código para continuar.</div>
+      <button class="btn btn-primary" onclick="gerarNovoPix()" style="margin-bottom:10px;">GERAR NOVO PIX</button>
+      <button class="btn btn-ghost" onclick="go('deposit-screen')">ESCOLHER OUTRO VALOR</button>
+    </div>
+    <div id="pix-erro" style="display:none;background:var(--dark2);border:1px solid rgba(255,59,92,.2);border-radius:20px;padding:44px 32px;text-align:center;">
+      <div style="font-size:52px;margin-bottom:16px;">⚠️</div>
+      <div style="font-size:17px;font-weight:700;color:var(--red);margin-bottom:8px;">Erro ao gerar PIX</div>
+      <div id="pix-erro-msg" style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;"></div>
+      <button class="btn btn-primary" onclick="gerarNovoPix()" style="margin-bottom:10px;">TENTAR NOVAMENTE</button>
+      <button class="btn btn-ghost" onclick="go('deposit-screen')">VOLTAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN ===== -->
+<div class="screen" id="admin-screen" style="padding:0;justify-content:flex-start;overflow-y:auto;">
+  <div style="width:100%;max-width:480px;margin:0 auto;padding:20px 16px 40px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-top:8px;">
+      <div><div class="logo-wrap"><span class="logo-emoji" style="font-size:22px;">🐼</span><span class="logo-text" style="font-size:26px;">FORTUNE PANDA</span></div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--red);text-transform:uppercase;">⚙️ Painel Admin</div>
+      </div>
+      <button onclick="go('menu-screen')" style="background:var(--dark3);border:1px solid var(--dark4);border-radius:10px;padding:8px 14px;color:var(--muted);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;">← Voltar</button>
+    </div>
+    <div class="admin-card"><div style="font-weight:700;color:var(--text);margin-bottom:12px;">👥 Usuários</div><div id="admin-user-list" style="font-size:12px;color:var(--muted);">Carregando...</div></div>
+    <div class="admin-card">
+      <div style="font-weight:700;color:var(--text);margin-bottom:12px;">💰 Adicionar Saldo (Admin)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input id="admin-add-user-id" class="admin-input" style="flex:2;min-width:120px;" placeholder="ID do usuário">
+        <input id="admin-add-amount" class="admin-input" style="flex:1;min-width:80px;" placeholder="Valor" type="number" step="0.01">
+        <button class="admin-btn" onclick="adminAddSaldo()">Adicionar</button>
+      </div>
+      <div id="admin-add-msg" style="font-size:11px;margin-top:8px;display:none;"></div>
+    </div>
+    <div class="admin-card"><div style="font-weight:700;color:var(--text);margin-bottom:12px;">📊 Comissões</div><div id="admin-comissoes-list" style="font-size:12px;color:var(--muted);">Carregando...</div></div>
+    <div class="admin-card">
+      <div style="font-weight:700;color:var(--text);margin-bottom:12px;">🔗 Tornar Afiliado</div>
+      <div style="display:flex;gap:8px;">
+        <input id="admin-make-aff-id" class="admin-input" style="flex:1;" placeholder="ID do usuário">
+        <button class="admin-btn" onclick="adminMakeAfiliado()">Tornar Afiliado</button>
+      </div>
+      <div id="admin-make-aff-msg" style="font-size:11px;margin-top:8px;display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 id="auth-modal-title">Acesse sua conta</h3>
+      <button onclick="fecharModalAuth()" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;">✕</button>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchAuthTab('login')">Entrar</button>
+      <button class="tab-btn" onclick="switchAuthTab('register')">Cadastrar</button>
+    </div>
+    <div class="tab-content active" id="auth-login">
+      <div class="field"><label>E-mail</label><input type="email" id="modal-login-email" placeholder="seu@email.com"><div class="err">E-mail inválido</div></div>
+      <div class="field"><label>Senha</label><input type="password" id="modal-login-pass" placeholder="••••••••"><div class="err">Senha incorreta</div></div>
+      <button class="btn btn-primary" onclick="doLoginModal()">ENTRAR</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">Não tem conta? <span class="link" onclick="switchAuthTab('register')">Cadastre-se</span></div>
+    </div>
+    <div class="tab-content" id="auth-register">
+      <div class="field"><label>E-mail</label><input type="email" id="modal-reg-email" placeholder="seu@email.com"><div class="err">E-mail inválido</div></div>
+      <div class="field"><label>CPF</label><input type="text" id="modal-reg-cpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)"><div class="err">CPF inválido</div></div>
+      <div class="field"><label>Senha</label><input type="password" id="modal-reg-pass" placeholder="Mínimo 6 caracteres"><div class="err">Mínimo 6 caracteres</div></div>
+      <div class="terms-wrap"><input type="checkbox" id="modal-reg-terms"><label for="modal-reg-terms">Li e concordo com os <span class="link" onclick="openTerms()">termos de uso</span>.</label></div>
+      <button class="btn btn-primary" onclick="doRegisterModal()">CRIAR CONTA</button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);">Já tem conta? <span class="link" onclick="switchAuthTab('login')">Entre</span></div>
+    </div>
   </div>
 </div>
 
 <script>
-// ================= UTILIDADES =================
-function limparNumeros(str) { return (str || '').replace(/\D/g, ''); }
-function mascararCpf(v) {
-  v = limparNumeros(v).slice(0, 11);
-  return v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-}
-function mascararTelefone(v) {
-  v = limparNumeros(v).slice(0, 11);
-  if (v.length <= 10) return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').trim();
-  return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').trim();
-}
-function cpfValido(cpfBruto) {
-  const cpf = limparNumeros(cpfBruto);
-  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-  let soma = 0;
-  for (let i = 0; i < 9; i++) soma += Number(cpf[i]) * (10 - i);
-  let resto = (soma * 10) % 11;
-  if (resto === 10) resto = 0;
-  if (resto !== Number(cpf[9])) return false;
-  soma = 0;
-  for (let i = 0; i < 10; i++) soma += Number(cpf[i]) * (11 - i);
-  resto = (soma * 10) % 11;
-  if (resto === 10) resto = 0;
-  return resto === Number(cpf[10]);
-}
+// ============================================================
+// CONFIGURAÇÃO SUPABASE
+// ============================================================
+const SUPABASE_URL = window.SITE_CONFIG?.SUPABASE_URL || '';
+const SUPABASE_KEY = window.SITE_CONFIG?.SUPABASE_KEY || '';
 
-const fCpf = document.getElementById('fCpf');
-const fTelefone = document.getElementById('fTelefone');
-const fCep = document.getElementById('fCep');
-fCpf.addEventListener('input', (e) => (e.target.value = mascararCpf(e.target.value)));
-fTelefone.addEventListener('input', (e) => (e.target.value = mascararTelefone(e.target.value)));
-fCep.addEventListener('input', (e) => {
-  let v = limparNumeros(e.target.value).slice(0, 8);
-  e.target.value = v.replace(/(\d{5})(\d)/, '$1-$2');
-});
-fCep.addEventListener('blur', async () => {
-  const cep = limparNumeros(fCep.value);
-  if (cep.length !== 8) return;
-  try {
-    const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-    const dado = await resp.json();
-    if (!dado.erro) {
-      document.getElementById('fRua').value = dado.logradouro || '';
-      document.getElementById('fBairro').value = dado.bairro || '';
-      document.getElementById('fCidade').value = dado.localidade ? `${dado.localidade} - ${dado.uf}` : '';
-      document.getElementById('fNumero').focus();
-    }
-  } catch {}
-});
-document.getElementById('cCpf').addEventListener('input', (e) => (e.target.value = mascararCpf(e.target.value)));
-
-// ================= PRECOS =================
-const PRECOS = { kit2: 23.99, kit5: 47.12, kit10: 79.95, kit20: 141.36 };
-
-// ================= CHECKOUT =================
-let produtoSelecionado = 'kit2';
-let pedidoAtual = null;
-let pollTimer = null;
-
-const overlay = document.getElementById('checkoutOverlay');
-const phaseDados = document.getElementById('phaseDados');
-const phasePix = document.getElementById('phasePix');
-const phaseSucesso = document.getElementById('phaseSucesso');
-const dots = [document.getElementById('stepDot1'), document.getElementById('stepDot2'), document.getElementById('stepDot3')];
-
-function marcarProduto(p) {
-  produtoSelecionado = p;
-  document.querySelectorAll('.product-option').forEach(el => el.classList.toggle('is-selected', el.dataset.produto === p));
-}
-function setFase(f) {
-  phaseDados.style.display = f === 1 ? 'block' : 'none';
-  phasePix.style.display = f === 2 ? 'block' : 'none';
-  phaseSucesso.style.display = f === 3 ? 'block' : 'none';
-  dots.forEach((d, i) => { d.classList.toggle('is-active', i === f - 1); d.classList.toggle('is-done', i < f - 1); });
-}
-function abrirCheckout(p) {
-  marcarProduto(p || 'kit2');
-  setFase(1);
-  document.getElementById('dadosAlert').classList.remove('is-visible');
-  overlay.classList.add('is-open');
-  document.body.style.overflow = 'hidden';
-}
-function fecharCheckout() {
-  overlay.classList.remove('is-open');
-  document.body.style.overflow = '';
-  if (pollTimer) clearInterval(pollTimer);
-}
-document.querySelectorAll('[data-open-checkout]').forEach(btn => btn.addEventListener('click', () => abrirCheckout(btn.dataset.produto)));
-document.getElementById('checkoutClose').addEventListener('click', fecharCheckout);
-document.getElementById('btnFecharSucesso').addEventListener('click', fecharCheckout);
-overlay.addEventListener('click', (e) => { if (e.target === overlay) fecharCheckout(); });
-document.querySelectorAll('.product-option').forEach(el => el.addEventListener('click', () => marcarProduto(el.dataset.produto)));
-
-function mostrarErro(id, mostrar) { document.getElementById(id).parentElement.classList.toggle('has-error', mostrar); }
-
-document.getElementById('btnIrPagamento').addEventListener('click', async () => {
-  const nome = document.getElementById('fNome').value.trim();
-  const cpf = document.getElementById('fCpf').value;
-  const telefone = document.getElementById('fTelefone').value;
-  const cep = document.getElementById('fCep').value;
-  const numero = document.getElementById('fNumero').value.trim();
-  const rua = document.getElementById('fRua').value.trim();
-  const bairro = document.getElementById('fBairro').value.trim();
-  const cidade = document.getElementById('fCidade').value.trim();
-  const complemento = document.getElementById('fComplemento').value.trim();
-
-  let valido = true;
-  if (nome.split(' ').length < 2) { mostrarErro('fNome', true); valido = false; } else mostrarErro('fNome', false);
-  if (!cpfValido(cpf)) { mostrarErro('fCpf', true); valido = false; } else mostrarErro('fCpf', false);
-  if (limparNumeros(telefone).length < 10) { mostrarErro('fTelefone', true); valido = false; } else mostrarErro('fTelefone', false);
-
-  const alertEl = document.getElementById('dadosAlert');
-  if (!rua || !numero || !cidade) {
-    alertEl.textContent = 'Preencha o endereço completo.';
-    alertEl.classList.add('is-visible');
-    valido = false;
-  } else {
-    alertEl.classList.remove('is-visible');
-  }
-  if (!valido) return;
-
-  const btn = document.getElementById('btnIrPagamento');
-  btn.disabled = true;
-  btn.textContent = 'Gerando...';
-
-  try {
-    const valor = PRECOS[produtoSelecionado];
-    const descricao = `Dom Pelo - ${produtoSelecionado.toUpperCase()}`;
-    const cpfLimpo = limparNumeros(cpf);
-
-    const resp = await fetch('/.netlify/functions/deposit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: valor, description: descricao, payerName: nome, payerDocument: cpfLimpo })
+const SB = {
+  url: SUPABASE_URL, key: SUPABASE_KEY,
+  async req(method, path, body) {
+    if (!this.url || !this.key) throw new Error('Supabase não configurado');
+    const r = await fetch(this.url + '/rest/v1/' + path, {
+      method: method,
+      headers: { 'apikey': this.key, 'Authorization': 'Bearer ' + this.key, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+      body: body ? JSON.stringify(body) : undefined
     });
-    const result = await resp.json();
-    if (!result.success) throw new Error(result.message || 'Erro ao gerar Pix');
+    const txt = await r.text();
+    if (!r.ok && r.status !== 404) throw new Error(txt || 'Erro ' + r.status);
+    return txt ? JSON.parse(txt) : null;
+  },
+  get(table, query = '') { return this.req('GET', table + '?' + query); },
+  post(table, body) { return this.req('POST', table, body); },
+  patch(table, query, body) { return this.req('PATCH', table + '?' + query, body); }
+};
 
-    pedidoAtual = result.transactionId;
-    document.getElementById('pixQr').src = `data:image/png;base64,${result.qrcodeUrl}`;
-    document.getElementById('pixCopiaCola').value = result.copyPaste;
-    setFase(2);
-    iniciarPolling();
-  } catch (err) {
-    alertEl.textContent = err.message || 'Tente de novo.';
-    alertEl.classList.add('is-visible');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'CONTINUAR';
+let state = { user: null, saldo: 0, depSelected: null };
+
+// ============================================================
+// SESSÃO PERSISTENTE
+// ============================================================
+function salvarSessao() {
+  if (state.user) {
+    localStorage.setItem('fortune_panda_user', JSON.stringify(state.user));
+    localStorage.setItem('fortune_panda_saldo', String(state.saldo));
+  } else {
+    localStorage.removeItem('fortune_panda_user');
+    localStorage.removeItem('fortune_panda_saldo');
   }
-});
-
-document.getElementById('btnCopiarPix').addEventListener('click', () => {
-  const input = document.getElementById('pixCopiaCola');
-  input.select();
-  navigator.clipboard?.writeText(input.value);
-  const btn = document.getElementById('btnCopiarPix');
-  const original = btn.textContent;
-  btn.textContent = 'Copiado!';
-  setTimeout(() => (btn.textContent = original), 1500);
-});
-
-function iniciarPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(async () => {
-    if (!pedidoAtual) return;
-    try {
-      const resp = await fetch('/.netlify/functions/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transactionId: pedidoAtual })
-      });
-      const result = await resp.json();
-      if (result.transaction && result.transaction.transactionState === 'COMPLETO') {
-        clearInterval(pollTimer);
-        document.getElementById('orderIdDisplay').textContent = pedidoAtual;
-        setFase(3);
-      }
-    } catch {}
-  }, 3000);
 }
 
-// CONSULTA
-const consultaOverlay = document.getElementById('consultaOverlay');
-function abrirConsulta() {
-  consultaOverlay.classList.add('is-open');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('consultaResultado').innerHTML = '';
-  document.getElementById('consultaAlert').classList.remove('is-visible');
+function carregarSessao() {
+  try {
+    const userStr = localStorage.getItem('fortune_panda_user');
+    const saldoStr = localStorage.getItem('fortune_panda_saldo');
+    if (userStr) {
+      state.user = JSON.parse(userStr);
+      state.saldo = parseFloat(saldoStr) || 0;
+      return true;
+    }
+  } catch(e) { console.warn('Erro ao carregar sessão:', e); }
+  return false;
 }
-function fecharConsulta() { consultaOverlay.classList.remove('is-open'); document.body.style.overflow = ''; }
-document.querySelector('[data-consulta]')?.addEventListener('click', abrirConsulta);
-document.getElementById('consultaClose').addEventListener('click', fecharConsulta);
-consultaOverlay.addEventListener('click', (e) => { if (e.target === consultaOverlay) fecharConsulta(); });
 
-document.getElementById('btnBuscarPedido').addEventListener('click', async () => {
-  const cpf = document.getElementById('cCpf').value;
-  const pedidoId = document.getElementById('cPedido').value.trim();
-  const alertEl = document.getElementById('consultaAlert');
-  if (!cpfValido(cpf) || !pedidoId) {
-    alertEl.textContent = 'Informe CPF e número do pedido.';
-    alertEl.classList.add('is-visible');
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function openTerms() { alert('📜 Termos de uso:\n\n1. Você deve ter 18 anos ou mais.\n2. Não há garantia de ganhos.\n3. Depósitos não são reembolsáveis.\n4. Jogue com responsabilidade.'); }
+
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
+  v = v.replace(/(\d{3})(\d)/, '$1.$2');
+  v = v.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+  v = v.replace(/\.(\d{3})(\d)/, '.$1-$2');
+  el.value = v;
+}
+
+function abrirModalLogin() { switchAuthTab('login'); document.getElementById('auth-modal').classList.add('open'); }
+function abrirModalCadastro() { switchAuthTab('register'); document.getElementById('auth-modal').classList.add('open'); }
+function fecharModalAuth() { document.getElementById('auth-modal').classList.remove('open'); }
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'login') {
+    document.querySelector('.tab-btn:first-child').classList.add('active');
+    document.getElementById('auth-login').classList.add('active');
+    document.getElementById('auth-modal-title').textContent = 'Acesse sua conta';
+  } else {
+    document.querySelector('.tab-btn:last-child').classList.add('active');
+    document.getElementById('auth-register').classList.add('active');
+    document.getElementById('auth-modal-title').textContent = 'Crie sua conta';
+  }
+}
+
+// ============================================================
+// LOGIN E CADASTRO
+// ============================================================
+async function doLoginModal() {
+  const email = document.getElementById('modal-login-email').value.trim().toLowerCase();
+  const pass = document.getElementById('modal-login-pass').value;
+  if (!email || !pass) { alert('Preencha todos os campos.'); return; }
+
+  if (email === 'admin@fortune.com' && pass === 'admin123') {
+    state.user = { id: 'admin', email: email, isAdmin: true, saldo: 0 };
+    state.saldo = 0;
+    fecharModalAuth();
+    atualizarMenu();
+    salvarSessao();
+    go('menu-screen');
     return;
   }
-  alertEl.classList.remove('is-visible');
+
   try {
-    const resp = await fetch('/.netlify/functions/check', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ transactionId: pedidoId })
-    });
-    const result = await resp.json();
-    const box = document.getElementById('consultaResultado');
-    if (!result.transaction) {
-      box.innerHTML = `<p style="color:#b8af9c;">Pedido não encontrado.</p>`;
-      return;
-    }
-    const t = result.transaction;
-    const status = t.transactionState === 'COMPLETO' ? '✅ Pago' : '⏳ Pendente';
-    box.innerHTML = `<div style="background:#211d17;border:1px solid #3a3226;border-radius:16px;padding:20px;">
-      <p><strong>Valor: R$ ${t.value?.toFixed(2) || '--'}</strong></p>
-      <p style="color:#b8af9c;">Status: ${status}</p>
-      <p style="color:#b8af9c;font-family:monospace;font-size:0.8rem;">ID: ${t.transactionId}</p>
-    </div>`;
-  } catch {
-    alertEl.textContent = 'Erro ao consultar. Tente novamente.';
-    alertEl.classList.add('is-visible');
+    const rows = await SB.get('usuarios', `email=eq.${encodeURIComponent(email)}`);
+    if (!rows || rows.length === 0) { alert('❌ E-mail não encontrado.'); return; }
+    const user = rows[0];
+    if (user.senha !== pass) { alert('❌ Senha incorreta.'); return; }
+    state.user = user; state.saldo = Number(user.saldo) || 0;
+    fecharModalAuth();
+    atualizarMenu();
+    salvarSessao();
+    go('menu-screen');
+  } catch (e) { alert('❌ Erro ao fazer login: ' + e.message); }
+}
+
+async function doRegisterModal() {
+  let ok = true;
+  const email = document.getElementById('modal-reg-email').value.trim().toLowerCase();
+  const cpf = document.getElementById('modal-reg-cpf').value.trim();
+  const pass = document.getElementById('modal-reg-pass').value;
+  const terms = document.getElementById('modal-reg-terms').checked;
+
+  const emailF = document.getElementById('modal-reg-email').parentElement;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { emailF.classList.add('has-err'); ok = false; } else { emailF.classList.remove('has-err'); }
+  
+  const cpfF = document.getElementById('modal-reg-cpf').parentElement;
+  const cpfLimpo = cpf.replace(/\D/g, '');
+  if (cpfLimpo.length !== 11) { cpfF.classList.add('has-err'); ok = false; } else { cpfF.classList.remove('has-err'); }
+  
+  const passF = document.getElementById('modal-reg-pass').parentElement;
+  if (pass.length < 6) { passF.classList.add('has-err'); ok = false; } else { passF.classList.remove('has-err'); }
+  if (!terms) { alert('⚠️ Aceite os termos.'); ok = false; }
+  if (!ok) return;
+
+  try {
+    const exist = await SB.get('usuarios', `email=eq.${encodeURIComponent(email)}`);
+    if (exist && exist.length > 0) { alert('❌ E-mail já cadastrado.'); return; }
+    const id = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+    await SB.post('usuarios', { id, email, cpf: cpfLimpo, senha: pass, saldo: 0, criado_em: Date.now() });
+    state.user = { id, email, cpf: cpfLimpo, saldo: 0 };
+    state.saldo = 0;
+    fecharModalAuth();
+    atualizarMenu();
+    salvarSessao();
+    go('menu-screen');
+    alert('✅ Conta criada com sucesso!');
+  } catch (e) { alert('❌ Erro ao criar conta: ' + e.message); }
+}
+
+function atualizarMenu() {
+  const u = state.user;
+  if (!u) return;
+  document.getElementById('menu-userid').textContent = '#' + u.id;
+  document.getElementById('menu-saldo').textContent = 'R$ ' + Number(state.saldo).toFixed(2).replace('.', ',');
+  const adminBtn = document.getElementById('menu-admin-painel');
+  if (adminBtn) adminBtn.style.display = (u.isAdmin || u.id === 'admin' || u.email === 'admin@fortune.com') ? 'block' : 'none';
+}
+
+function fazerLogout() {
+  if (!confirm('Deseja sair da conta?')) return;
+  state.user = null;
+  state.saldo = 0;
+  salvarSessao();
+  go('login-screen');
+}
+
+// ============================================================
+// DEPÓSITO E PIX
+// ============================================================
+function selectDep(val, el) {
+  document.querySelectorAll('.dep-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.depSelected = val;
+  document.getElementById('dep-selected').textContent = 'R$ ' + val + ',00';
+}
+
+function doDeposit() {
+  if (!state.user) { alert('Faça login primeiro.'); abrirModalLogin(); return; }
+  if (!state.depSelected) { alert('Selecione um valor.'); return; }
+  pixCtrl.valor = state.depSelected;
+  go('pix-screen');
+  pixCtrl.iniciar();
+}
+
+const pixCtrl = {
+  valor: 0, txid: null, timerIv: null, segsRestantes: 900, isDemo: true,
+  ui(id, show) { const el = document.getElementById(id); if (el) el.style.display = show ? 'block' : 'none'; },
+  resetUI() {
+    this.ui('pix-loading', true); this.ui('pix-ready', false); this.ui('pix-expirado', false); this.ui('pix-erro', false);
+    const ag = document.getElementById('pix-aguardando'), cf = document.getElementById('pix-confirmado'), qr = document.getElementById('pix-qrcode-wrap'), ct = document.getElementById('pix-copia-texto');
+    if (ag) ag.style.display = 'block'; if (cf) cf.style.display = 'none'; if (qr) qr.innerHTML = ''; if (ct) ct.textContent = '';
+  },
+  async iniciar() {
+    if (this.timerIv) { clearInterval(this.timerIv); this.timerIv = null; }
+    this.txid = null; this.isDemo = true; this.segsRestantes = 900; this.resetUI();
+    this._demo();
+  },
+  _demo() {
+    this.isDemo = true; this.txid = 'DEMO_' + Date.now(); this.segsRestantes = 900;
+    const v = Number(this.valor).toFixed(2);
+    const codigo = '00020126360014BR.GOV.BCB.PIX0114fortune' + Date.now().toString().slice(-8) +
+      '5204000053039865406' + v.replace('.', '').padStart(6, '0') + '5802BR5911FORTUNEP6009SAOPAULO62070503***';
+    this._mostrarQR(null, codigo, this.valor);
+    this._iniciarTimer();
+  },
+  _mostrarQR(base64, codigo, valor) {
+    this.ui('pix-loading', false); this.ui('pix-ready', true);
+    const vd = document.getElementById('pix-valor-display'), ct = document.getElementById('pix-copia-texto'), wr = document.getElementById('pix-qrcode-wrap');
+    if (vd) vd.textContent = 'R$ ' + Number(valor).toFixed(2).replace('.', ',');
+    if (ct) ct.textContent = codigo;
+    if (!wr) return; wr.innerHTML = '';
+    const img = new Image();
+    img.onload = function() { img.style.cssText = 'width:200px;height:200px;border-radius:8px;display:block;'; if (wr) { wr.innerHTML = ''; wr.appendChild(img); } };
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(codigo) + '&margin=6';
+  },
+  _iniciarTimer() {
+    const ctrl = this;
+    clearInterval(ctrl.timerIv);
+    ctrl.timerIv = setInterval(function() {
+      ctrl.segsRestantes = Math.max(0, ctrl.segsRestantes - 1);
+      const el = document.getElementById('pix-timer');
+      if (el) { const m = Math.floor(ctrl.segsRestantes / 60), s = ctrl.segsRestantes % 60; el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0'); }
+      if (ctrl.segsRestantes <= 0) { clearInterval(ctrl.timerIv); ctrl.timerIv = null; ctrl.ui('pix-ready', false); ctrl.ui('pix-expirado', true); ctrl.txid = null; }
+    }, 1000);
+  },
+  confirmar(valor) {
+    if (this.timerIv) { clearInterval(this.timerIv); this.timerIv = null; }
+    state.saldo += Number(valor);
+    if (state.user) state.user.saldo = state.saldo;
+    state.depSelected = null;
+    document.querySelectorAll('.dep-card').forEach(c => c.classList.remove('selected'));
+    const ds = document.getElementById('dep-selected');
+    if (ds) ds.textContent = 'R$ --';
+    atualizarMenu();
+    salvarSessao();
+    this.txid = null; this.isDemo = false;
+    const ag = document.getElementById('pix-aguardando'), cf = document.getElementById('pix-confirmado'), mg = document.getElementById('pix-confirmado-msg');
+    if (ag) ag.style.display = 'none';
+    if (cf) cf.style.display = 'block';
+    if (mg) mg.textContent = 'R$ ' + Number(valor).toFixed(2).replace('.', ',') + ' adicionados ao seu saldo! 🎉';
   }
+};
+
+function gerarNovoPix() { pixCtrl.resetUI(); document.getElementById('pix-expirado').style.display = 'none'; document.getElementById('pix-erro').style.display = 'none'; pixCtrl.segsRestantes = 900; pixCtrl.iniciar(); }
+function cancelarPix() { clearInterval(pixCtrl.timerIv); pixCtrl.timerIv = null; pixCtrl.txid = null; pixCtrl.isDemo = false; go('deposit-screen'); }
+async function copiarPix() {
+  const texto = document.getElementById('pix-copia-texto').textContent;
+  const btn = document.getElementById('btn-copiar');
+  try { await navigator.clipboard.writeText(texto); } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = texto; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  }
+  const orig = btn.innerHTML;
+  btn.innerHTML = '✅ COPIADO!';
+  btn.style.background = 'linear-gradient(135deg,#00cc66,#009944)';
+  setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 2500);
+  if (pixCtrl.isDemo) {
+    const ag = document.getElementById('pix-aguardando');
+    if (ag) ag.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.2s ease-in-out infinite;flex-shrink:0;"></div><span style="font-size:13px;color:var(--green);font-weight:600;">Confirmando pagamento em 10s... ⏳</span></div>';
+    const v = pixCtrl.valor;
+    setTimeout(function() { if (pixCtrl.isDemo) pixCtrl.confirmar(v); }, 10000);
+    pixCtrl.isDemo = false;
+  }
+}
+
+// ============================================================
+// SAQUE
+// ============================================================
+function abrirSaque() {
+  if (!state.user) { alert('Faça login primeiro.'); abrirModalLogin(); return; }
+  go('saque-screen');
+  document.getElementById('saque-saldo-display').textContent = 'R$ ' + Number(state.saldo).toFixed(2).replace('.', ',');
+  verificarRegrasSaque();
+}
+
+function verificarRegrasSaque() {
+  const user = state.user, saldo = state.saldo;
+  let regrasOk = 0, totalRegras = 3;
+  const regra1 = user && user.cpf && user.cpf.length === 11 && user.email && user.email.length > 0;
+  const el1 = document.getElementById('saque-regra-1');
+  if (el1) { el1.innerHTML = regra1 ? '<span class="check">✅</span> Identidade verificada' : '<span class="x">❌</span> Verificar identidade (CPF/Email)'; if (regra1) regrasOk++; }
+  const regra2 = saldo >= 50;
+  const el2 = document.getElementById('saque-regra-2');
+  if (el2) { el2.innerHTML = regra2 ? '<span class="check">✅</span> Saldo mínimo atingido (R$ 50,00)' : '<span class="x">❌</span> Mínimo R$ 50,00 para saque (você tem ' + Number(saldo).toFixed(2).replace('.', ',') + ')'; if (regra2) regrasOk++; }
+  const regra3 = true;
+  const el3 = document.getElementById('saque-regra-3');
+  if (el3) { el3.innerHTML = regra3 ? '<span class="check">✅</span> Conta verificada' : '<span class="x">❌</span> Conta ativa há mais de 7 dias'; if (regra3) regrasOk++; }
+  const form = document.getElementById('saque-form'), bloq = document.getElementById('saque-bloqueado'), msg = document.getElementById('saque-bloqueado-msg');
+  if (regrasOk === totalRegras) { form.style.display = 'block'; bloq.style.display = 'none'; } else { form.style.display = 'none'; bloq.style.display = 'block'; msg.innerHTML = '⚠️ Complete todas as condições para liberar o saque.<br><br>✅ ' + regrasOk + ' de ' + totalRegras + ' condições cumpridas.'; }
+}
+
+async function confirmarSaque() {
+  const chave = document.getElementById('saque-chave-pix').value.trim();
+  if (!chave) { alert('Informe sua chave PIX.'); return; }
+  if (state.saldo < 50) { alert('Saldo mínimo para saque: R$ 50,00'); return; }
+  try {
+    await SB.post('saques_usuario', { id: 'saq_' + Date.now(), user_id: state.user.id, email: state.user.email, valor: state.saldo, chave_pix: chave, status: 'pendente', criado_em: Date.now() });
+    state.saldo = 0;
+    await SB.patch('usuarios', `id=eq.${state.user.id}`, { saldo: 0 });
+    atualizarMenu();
+    salvarSessao();
+    alert('✅ Saque solicitado!\nAguarde aprovação. Processamento pode levar até 48hrs.\nPIX: ' + chave);
+    go('menu-screen');
+  } catch (e) { alert('❌ Erro ao solicitar saque: ' + e.message); }
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+async function adminCarregarDados() {
+  if (!state.user) return;
+  const isAdmin = state.user.isAdmin || state.user.id === 'admin' || state.user.email === 'admin@fortune.com';
+  if (!isAdmin) return;
+  try {
+    const users = await SB.get('usuarios', 'select=id,email,saldo');
+    const list = document.getElementById('admin-user-list');
+    if (!users || !users.length) { list.textContent = 'Nenhum usuário cadastrado.'; } else {
+      list.innerHTML = users.map(u => `<div class="row"><span class="label">#${u.id}</span><span class="value">${u.email}</span><span class="value">R$ ${Number(u.saldo).toFixed(2)}</span></div>`).join('');
+    }
+    const comissoes = await SB.get('comissoes', 'order=criado_em.desc&limit=30');
+    const cList = document.getElementById('admin-comissoes-list');
+    if (!comissoes || !comissoes.length) { cList.textContent = 'Nenhuma comissão registrada.'; } else {
+      cList.innerHTML = comissoes.map(c => `<div class="row"><span class="label">#${c.user_id}</span><span class="value">${c.tipo}</span><span class="value">R$ ${Number(c.valor).toFixed(2)}</span></div>`).join('');
+    }
+  } catch (e) { console.error('Admin carregar dados:', e); }
+}
+
+async function adminAddSaldo() {
+  const userId = document.getElementById('admin-add-user-id').value.trim();
+  const amount = parseFloat(document.getElementById('admin-add-amount').value);
+  const msg = document.getElementById('admin-add-msg');
+  if (!userId || isNaN(amount) || amount <= 0) {
+    msg.textContent = '❌ Preencha ID e valor válido.';
+    msg.style.color = 'var(--red)'; msg.style.display = 'block';
+    return;
+  }
+  try {
+    const user = await SB.get('usuarios', `id=eq.${userId}`);
+    if (!user || !user.length) { msg.textContent = '❌ Usuário não encontrado.'; msg.style.color = 'var(--red)'; msg.style.display = 'block'; return; }
+    const saldoAtual = Number(user[0].saldo) || 0;
+    const novoSaldo = saldoAtual + amount;
+    await SB.patch('usuarios', `id=eq.${userId}`, { saldo: novoSaldo });
+    msg.textContent = '✅ Saldo adicionado com sucesso!';
+    msg.style.color = 'var(--green)'; msg.style.display = 'block';
+    document.getElementById('admin-add-user-id').value = '';
+    document.getElementById('admin-add-amount').value = '';
+    adminCarregarDados();
+    if (state.user.id === userId) { state.saldo = novoSaldo; atualizarMenu(); salvarSessao(); }
+  } catch (e) { msg.textContent = '❌ Erro: ' + e.message; msg.style.color = 'var(--red)'; msg.style.display = 'block'; }
+}
+
+async function adminMakeAfiliado() {
+  const userId = document.getElementById('admin-make-aff-id').value.trim();
+  const msg = document.getElementById('admin-make-aff-msg');
+  if (!userId) { msg.textContent = '❌ Digite o ID do usuário.'; msg.style.color = 'var(--red)'; msg.style.display = 'block'; return; }
+  try {
+    const user = await SB.get('usuarios', `id=eq.${userId}`);
+    if (!user || !user.length) { msg.textContent = '❌ Usuário não encontrado.'; msg.style.color = 'var(--red)'; msg.style.display = 'block'; return; }
+    const exist = await SB.get('afiliados', `user_id=eq.${userId}`);
+    if (exist && exist.length) { msg.textContent = '⚠️ Usuário já é afiliado.'; msg.style.color = 'var(--gold)'; msg.style.display = 'block'; return; }
+    const codigo = 'AF' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+    await SB.post('afiliados', { user_id: userId, codigo, saldo_comissao: 0, criado_em: Date.now() });
+    await SB.patch('usuarios', `id=eq.${userId}`, { codigo_afiliado: codigo });
+    msg.textContent = '✅ Afiliado criado! Código: ' + codigo;
+    msg.style.color = 'var(--green)'; msg.style.display = 'block';
+    document.getElementById('admin-make-aff-id').value = '';
+    adminCarregarDados();
+  } catch (e) { msg.textContent = '❌ Erro: ' + e.message; msg.style.color = 'var(--red)'; msg.style.display = 'block'; }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const obs = new MutationObserver(() => {
+    if (document.getElementById('admin-screen').classList.contains('active')) { adminCarregarDados(); }
+  });
+  obs.observe(document.getElementById('admin-screen'), { attributes: true, attributeFilter: ['class'] });
 });
+
+// ============================================================
+// HISTÓRICO E AFILIADO
+// ============================================================
+function openHistorico() { if (!state.user) { alert('Faça login primeiro.'); abrirModalLogin(); return; } alert('📋 Histórico em desenvolvimento.'); }
+function openAfiliado() { if (!state.user) { alert('Faça login primeiro.'); abrirModalLogin(); return; } alert('🤝 Programa de Afiliados em desenvolvimento.'); }
+
+// ============================================================
+// TICKER E BANNER
+// ============================================================
+const NOMES = ['Ana S***', 'Carlos M***', 'Maria F***', 'João P***', 'Lucas R***'];
+const VALORES = [12, 18, 25, 31, 44];
+
+function buildTicker() {
+  const wrap = document.getElementById('ticker-wrap');
+  if (!wrap) return;
+  let html = '';
+  for (let copy = 0; copy < 3; copy++) {
+    for (let i = 0; i < NOMES.length; i++) {
+      const v = VALORES[i % VALORES.length];
+      html += `<div style="display:inline-flex;flex-direction:column;justify-content:center;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.12);border-radius:20px;padding:4px 14px;margin-right:10px;min-width:160px;"><span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;">${NOMES[i]}</span><span style="font-size:10px;color:var(--green);white-space:nowrap;">Lucrou R$${v},00 no Fortune Panda 🎉</span></div>`;
+    }
+  }
+  wrap.innerHTML = html;
+  const totalW = wrap.scrollWidth / 3;
+  let x = 0;
+  function tick() { x -= 0.6; if (x <= -totalW) x = 0; wrap.style.transform = 'translateX(' + x + 'px)'; requestAnimationFrame(tick); }
+  requestAnimationFrame(tick);
+}
+
+function buildMenuTicker() {
+  const wrap = document.getElementById('menu-ticker-wrap');
+  if (!wrap) return;
+  let html = '';
+  for (let copy = 0; copy < 3; copy++) {
+    for (let i = 0; i < NOMES.length; i++) {
+      const v = VALORES[i % VALORES.length];
+      html += `<div style="display:inline-flex;flex-direction:column;justify-content:center;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.12);border-radius:20px;padding:4px 14px;margin-right:10px;min-width:160px;"><span style="font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;">${NOMES[i]}</span><span style="font-size:10px;color:var(--green);white-space:nowrap;">Lucrou R$${v},00 no Fortune Panda 🎉</span></div>`;
+    }
+  }
+  wrap.innerHTML = html;
+  const totalW = wrap.scrollWidth / 3;
+  let x = 0;
+  function tick() { x -= 0.6; if (x <= -totalW) x = 0; wrap.style.transform = 'translateX(' + x + 'px)'; requestAnimationFrame(tick); }
+  requestAnimationFrame(tick);
+}
+
+// ============================================================
+// CONTADOR PAGOS HOJE
+// ============================================================
+(function() {
+  const META = 204327.00;
+  setInterval(function() {
+    const now = new Date();
+    const inicio = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime();
+    const fim = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
+    const progresso = Math.min(1, (Date.now() - inicio) / (fim - inicio));
+    const valor = META * progresso;
+    const reais = Math.floor(valor);
+    const centavos = Math.round((valor - reais) * 100);
+    const texto = 'R$ ' + reais.toLocaleString('pt-BR') + ',' + String(centavos).padStart(2, '0');
+    document.querySelectorAll('#pagos-hoje-valor, #pagos-hoje-valor-menu').forEach(el => { if (el) el.textContent = texto; });
+  }, 10000);
+})();
+
+// ============================================================
+// BANNER CAROUSEL
+// ============================================================
+setInterval(function() {
+  const track = document.getElementById('banner-track');
+  if (track) {
+    const idx = (parseInt(track.dataset.idx) || 0) + 1;
+    track.style.transform = 'translateX(-' + ((idx % 3) * 100) + '%)';
+    track.dataset.idx = idx % 3;
+    document.querySelectorAll('.bdot').forEach((d, i) => { d.style.width = i === (idx % 3) ? '20px' : '8px'; d.style.background = i === (idx % 3) ? 'var(--green)' : 'rgba(255,255,255,.3)'; });
+  }
+}, 4000);
+
+setInterval(function() {
+  const track = document.getElementById('menu-banner-track');
+  if (track) {
+    const idx = (parseInt(track.dataset.idx) || 0) + 1;
+    track.style.transform = 'translateX(-' + ((idx % 3) * 100) + '%)';
+    track.dataset.idx = idx % 3;
+    document.querySelectorAll('.mbdot').forEach((d, i) => { d.style.width = i === (idx % 3) ? '20px' : '8px'; d.style.background = i === (idx % 3) ? 'var(--green)' : 'rgba(255,255,255,.3)'; });
+  }
+}, 4000);
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+buildTicker();
+buildMenuTicker();
+
+if (carregarSessao()) {
+  atualizarMenu();
+  go('menu-screen');
+}
+
+console.log('🐼 Fortune Panda - Menu Principal');
+console.log('📌 Admin: admin@fortune.com / admin123');
+console.log('📌 9 jogos disponíveis via redirecionamento');
 </script>
 </body>
 </html>
