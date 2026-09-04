@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dom Pelo - Tônico Capilar para Barba, Cabelo e Sobrancelha</title>
+  <meta name="description" content="Tônico Capilar Dom Pelo: resultados reais em poucas semanas. Barba, cabelo e sobrancelha mais fortes. Compre com Pix e frete grátis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #15130f;
+      color: #ede6d6;
+      font-family: "Inter", -apple-system, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+    /* REDLINE */
+    .redline-top {
+      background: linear-gradient(180deg, #c0362c, #8f2620);
+      color: #fff;
+      text-align: center;
+      padding: 8px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .redline-top span { font-family: monospace; font-weight: 700; font-size: 0.85rem; }
+    .redline-top .frete { color: #7fff7f; }
+
+    /* BOTÃO DOURADO */
+    .btn-gold {
+      display: inline-block;
+      background: linear-gradient(135deg, #f7e05e, #d4a535);
+      color: #1a1509;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-align: center;
+      text-decoration: none;
+      width: 100%;
+      animation: floatBtn 3s ease-in-out infinite;
+    }
+    .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(200,155,60,0.3); }
+    @keyframes floatBtn {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* HERO */
+    .hero-img { width: 100%; aspect-ratio: 4/5; max-height: 460px; object-fit: contain; background: #211d17; }
+    .hero-title { font-size: 2rem; font-weight: 700; text-align: center; margin: 16px 0 4px; font-family: "Fraunces", serif; }
+    .hero-sub { text-align: center; color: #b8af9c; font-size: 0.95rem; margin-bottom: 16px; }
+    .hero-btn { max-width: 320px; margin: 0 auto; }
+
+    /* DEPOIMENTOS */
+    .depo-header { text-align: center; margin: 30px 0 16px; }
+    .depo-header h2 { font-size: 1.5rem; font-family: "Fraunces", serif; }
+    .depo-header p { color: #b8af9c; font-size: 0.9rem; }
+
+    .depo-box {
+      background: #211d17;
+      border: 1px solid #3a3226;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .depo-box img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+    .depo-box .body { padding: 16px 18px; }
+    .depo-box .stars { color: #e0b856; letter-spacing: 2px; font-size: 0.85rem; }
+    .depo-box p { color: #b8af9c; font-style: italic; font-size: 0.9rem; margin: 6px 0 8px; }
+    .depo-box .autor { font-family: monospace; font-size: 0.7rem; color: #ede6d6; }
+
+    /* OFERTAS */
+    .section-title { text-align: center; font-size: 1.6rem; font-family: "Fraunces", serif; margin: 32px 0 4px; }
+    .section-sub { text-align: center; color: #b8af9c; font-size: 0.9rem; margin-bottom: 20px; }
+
+    .offer-card {
+      background: #211d17;
+      border: 1px solid #3a3226;
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .offer-card.destaque { border-color: #e0b856; background: #1f1b15; }
+    .offer-card .img { width: 80px; height: 80px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #2a241c; }
+    .offer-card .img img { width: 100%; height: 100%; object-fit: contain; }
+    .offer-card .info { flex: 1; min-width: 120px; }
+    .offer-card .info h3 { font-size: 0.95rem; font-family: "Fraunces", serif; margin-bottom: 2px; }
+    .offer-card .info .tag { font-family: monospace; font-size: 0.55rem; color: #e0b856; background: #2a241c; padding: 2px 8px; border-radius: 999px; display: inline-block; }
+    .offer-card .preco { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .offer-card .preco .old { font-size: 0.75rem; color: #b8af9c; text-decoration: line-through; text-decoration-color: #c1584a; }
+    .offer-card .preco .new { font-size: 1.4rem; font-weight: 700; color: #fff; font-family: "Fraunces", serif; }
+    .offer-card .preco .desc { font-family: monospace; font-size: 0.6rem; color: #5c8a63; background: #1c2a1d; padding: 2px 8px; border-radius: 999px; }
+    .offer-card .action { margin-left: auto; flex-shrink: 0; }
+    .offer-card .action .btn-gold { padding: 10px 18px; font-size: 0.7rem; width: auto; min-width: 90px; }
+
+    /* MOTIVOS - 4 CARDS */
+    .motivos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    @media (max-width: 480px) {
+      .motivos-grid { grid-template-columns: 1fr; }
+    }
+    .motivo-card {
+      background: #211d17;
+      border: 1px solid #3a3226;
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    .motivo-card:hover { border-color: #e0b856; }
+    .motivo-card .icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .motivo-card h4 { font-size: 0.9rem; font-family: "Fraunces", serif; margin-bottom: 4px; }
+    .motivo-card p { color: #b8af9c; font-size: 0.8rem; margin-bottom: 10px; }
+    .motivo-card .btn-gold { padding: 10px 14px; font-size: 0.65rem; width: 100%; }
+
+    /* FAQ */
+    .faq-item {
+      border: 1px solid #3a3226;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      padding: 14px 16px;
+      font-weight: 600;
+      color: #b8af9c;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: "+"; font-family: monospace; color: #b8af9c; font-size: 1.1rem; }
+    .faq-item[open] summary::after { content: "–"; }
+    .faq-item[open] { border-color: #e0b856; }
+    .faq-item[open] summary { color: #e0b856; }
+    .faq-item .content { padding: 0 16px 16px; color: #b8af9c; font-size: 0.85rem; }
+
+    /* CTA FINAL */
+    .cta-final { text-align: center; margin: 30px 0 20px; }
+    .cta-final .btn-gold { max-width: 380px; padding: 18px 40px; font-size: 1.1rem; }
+
+    footer { text-align: center; padding: 30px 0; color: #b8af9c; font-size: 0.7rem; opacity: 0.5; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(10,9,6,0.75);
+      display: none; align-items: flex-end; justify-content: center;
+      z-index: 100; backdrop-filter: blur(4px);
+    }
+    .modal-overlay.is-open { display: flex; }
+    @media (min-width: 640px) { .modal-overlay { align-items: center; } }
+    .modal {
+      background: #211d17; border: 1px solid #3a3226;
+      border-radius: 22px 22px 0 0; width: 100%; max-width: 480px;
+      max-height: 92vh; overflow-y: auto; padding: 26px 22px 30px;
+      position: relative;
+    }
+    @media (min-width: 640px) { .modal { border-radius: 16px; } }
+    .modal__close {
+      position: absolute; top: 16px; right: 16px;
+      background: #2a241c; border: 1px solid #3a3226;
+      width: 34px; height: 34px; border-radius: 50%;
+      color: #ede6d6; font-size: 1.1rem; cursor: pointer;
+    }
+    .modal__steps { display: flex; gap: 6px; margin-bottom: 20px; }
+    .modal__steps span { flex: 1; height: 3px; border-radius: 3px; background: #3a3226; }
+    .modal__steps span.is-active, .modal__steps span.is-done { background: #e0b856; }
+    .modal h2 { font-size: 1.3rem; font-family: "Fraunces", serif; margin-bottom: 4px; }
+    .modal .lede { color: #b8af9c; font-size: 0.9rem; margin-bottom: 20px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.8rem; color: #b8af9c; margin-bottom: 6px; font-family: monospace; }
+    .field input {
+      width: 100%; background: #15130f; border: 1px solid #3a3226;
+      border-radius: 8px; padding: 13px 14px; color: #ede6d6;
+      font-size: 0.98rem;
+    }
+    .field input:focus { outline: 2px solid #e0b856; border-color: #e0b856; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-error { color: #c1584a; font-size: 0.78rem; margin-top: 6px; display: none; }
+    .field.has-error input { border-color: #c1584a; }
+    .field.has-error .field-error { display: block; }
+    .product-pick { display: grid; gap: 10px; margin-bottom: 18px; }
+    .product-option {
+      display: flex; justify-content: space-between; align-items: center;
+      border: 1px solid #3a3226; border-radius: 14px;
+      padding: 14px 16px; cursor: pointer;
+    }
+    .product-option.is-selected { border-color: #e0b856; background: #2a241c; }
+    .product-option strong { display: block; font-size: 0.92rem; }
+    .product-option span { color: #b8af9c; font-size: 0.8rem; }
+    .product-option .price { color: #e0b856; font-family: monospace; font-weight: 600; }
+    .pix-box { text-align: center; }
+    .pix-box img { width: 200px; height: 200px; margin: 0 auto 18px; border-radius: 8px; background: #fff; padding: 10px; }
+    .pix-copia { display: flex; gap: 8px; background: #15130f; border: 1px solid #3a3226; border-radius: 8px; padding: 10px 12px; margin-bottom: 16px; }
+    .pix-copia input { flex: 1; background: transparent; border: none; color: #b8af9c; font-family: monospace; font-size: 0.75rem; }
+    .pix-copia button { background: #2a241c; border: 1px solid #3a3226; color: #ede6d6; border-radius: 8px; padding: 0 12px; font-size: 0.78rem; cursor: pointer; }
+    .pix-status { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: monospace; font-size: 0.82rem; color: #b8af9c; margin-top: 6px; }
+    .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #3a3226; border-top-color: #e0b856; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .success-box { text-align: center; }
+    .success-icon { width: 64px; height: 64px; border-radius: 50%; background: #1c2a1d; color: #5c8a63; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 2rem; }
+    .order-id { font-family: monospace; background: #15130f; border: 1px solid #3a3226; border-radius: 8px; padding: 12px; font-size: 0.85rem; margin: 16px 0; word-break: break-all; }
+    .modal-alert { font-size: 0.85rem; color: #c1584a; margin-top: 10px; display: none; }
+    .modal-alert.is-visible { display: block; }
+    .disclaimer { margin-top: 20px; font-size: 0.7rem; color: #b8af9c; opacity: 0.5; text-align: center; }
+  </style>
+</head>
+<body>
+
+<!-- REDLINE -->
+<div class="redline-top">
+  <span>🔥 KIT 2 UNIDADES POR R$ 23,99 + <span class="frete">FRETE GRÁTIS</span> ⭐ 5.000+ APROVARAM</span>
+</div>
+
+<!-- HERO -->
+<img class="hero-img" src="https://i.imgur.com/AVwfoLu.jpg" alt="Dom Pelo" onerror="this.style.display='none'" />
+<div class="container">
+  <h1 class="hero-title">O tônico que transforma sua barba</h1>
+  <p class="hero-sub">Resultados reais em semanas. Barba, cabelo e sobrancelha mais fortes.</p>
+  <div class="hero-btn">
+    <a href="#kits" class="btn-gold" style="display:block; text-decoration:none;">🔥 QUERO MUDAR MINHA AUTOESTIMA</a>
+  </div>
+</div>
+
+<!-- DEPOIMENTOS -->
+<div class="container">
+  <div class="depo-header">
+    <h2>O que eles estão dizendo</h2>
+    <p>Homens que mudaram a autoestima</p>
+  </div>
+  <div class="depo-box">
+    <img src="https://i.imgur.com/11YaYkd.jpg" alt="Lucas" />
+    <div class="body">
+      <span class="stars">★★★★★</span>
+      <p>“Minha autoestima mudou demais. A barba preencheu e hoje me sinto muito mais confiante!”</p>
+      <div class="autor"><strong>Lucas Ferreira</strong> — Campinas, SP</div>
+    </div>
+  </div>
+  <div class="depo-box">
+    <img src="https://i.imgur.com/NyI92CQ.jpg" alt="Matheus" />
+    <div class="body">
+      <span class="stars">★★★★★</span>
+      <p>“Mudou minha confiança no dia a dia. Hoje converso e chego nas mulheres sem insegurança!”</p>
+      <div class="autor"><strong>Matheus Oliveira</strong> — Belo Horizonte, MG</div>
+    </div>
+  </div>
+  <div class="depo-box">
+    <img src="https://i.imgur.com/CTgMRdN.jpg" alt="Rafael" />
+    <div class="body">
+      <span class="stars">★★★★★</span>
+      <p>“Não imaginava que uma barba pudesse mudar tanto minha aparência e autoestima!”</p>
+      <div class="autor"><strong>Rafael Santos</strong> — Curitiba, PR</div>
+    </div>
+  </div>
+</div>
+
+<!-- KITS / OFERTAS -->
+<div class="container" id="kits">
+  <h2 class="section-title">Escolha seu kit</h2>
+  <p class="section-sub">Oferta por tempo limitado – estoque reduzido</p>
+
+  <div class="offer-card destaque">
+    <div class="img"><img src="https://i.imgur.com/aHOsVAr.jpg" alt="Kit 2" /></div>
+    <div class="info">
+      <h3>Kit 2 unidades</h3>
+      <span class="tag">⭐ mais vendido</span>
+      <div class="preco">
+        <span class="old">R$ 59,99</span>
+        <span class="new">R$ 23,99</span>
+        <span class="desc">60% OFF</span>
+      </div>
+    </div>
+    <div class="action">
+      <button class="btn-gold" data-open-checkout data-produto="kit2">COMPRAR</button>
+    </div>
+  </div>
+
+  <div class="offer-card">
+    <div class="img"><img src="https://i.imgur.com/qKtBVKD.jpg" alt="Kit 5" /></div>
+    <div class="info">
+      <h3>Kit 5 unidades</h3>
+      <span class="tag">📦 + frete grátis</span>
+      <div class="preco">
+        <span class="old">R$ 94,24</span>
+        <span class="new">R$ 47,12</span>
+        <span class="desc">50% OFF</span>
+      </div>
+    </div>
+    <div class="action">
+      <button class="btn-gold" data-open-checkout data-produto="kit5">COMPRAR</button>
+    </div>
+  </div>
+
+  <div class="offer-card" style="border-color:#e0b856;">
+    <div class="img"><img src="https://i.imgur.com/z8je7y1.jpg" alt="Kit 10" /></div>
+    <div class="info">
+      <h3>Kit 10 unidades</h3>
+      <span class="tag">✂️ kit para barbearia</span>
+      <div class="preco">
+        <span class="old">R$ 159,90</span>
+        <span class="new">R$ 79,95</span>
+        <span class="desc">50% OFF</span>
+      </div>
+    </div>
+    <div class="action">
+      <button class="btn-gold" data-open-checkout data-produto="kit10">COMPRAR</button>
+    </div>
+  </div>
+
+  <div class="offer-card" style="border-color:#e0b856;">
+    <div class="img"><img src="https://i.imgur.com/ap1qtoH.jpg" alt="Kit 20" /></div>
+    <div class="info">
+      <h3>Kit 20 unidades</h3>
+      <span class="tag">💰 kit de revendedor</span>
+      <div class="preco">
+        <span class="old">R$ 282,72</span>
+        <span class="new">R$ 141,36</span>
+        <span class="desc">50% OFF</span>
+      </div>
+    </div>
+    <div class="action">
+      <button class="btn-gold" data-open-checkout data-produto="kit20">COMPRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOTIVOS - 4 CARDS COM BOTÃO -->
+<div class="container">
+  <h2 class="section-title">🔥 Por que comprar agora?</h2>
+  <p class="section-sub">Motivos que fazem do Dom Pelo o favorito de milhares de homens</p>
+
+  <div class="motivos-grid">
+    <div class="motivo-card">
+      <span class="icon">📈</span>
+      <h4>Resultados em semanas</h4>
+      <p>Barba mais cheia e fios mais fortes em pouco tempo de uso.</p>
+      <button class="btn-gold" data-open-checkout data-produto="kit2">QUERO ESSE</button>
+    </div>
+
+    <div class="motivo-card">
+      <span class="icon">🚚</span>
+      <h4>Frete grátis</h4>
+      <p>Envio rápido via JadLog. Seu pedido chega sem custo extra.</p>
+      <button class="btn-gold" data-open-checkout data-produto="kit2">COMPRAR</button>
+    </div>
+
+    <div class="motivo-card" style="border-color:#e0b856;">
+      <span class="icon">💰</span>
+      <h4>Kit Revendedor</h4>
+      <p>20 unidades por R$ 141,36 — menos de R$ 8 por frasco!</p>
+      <button class="btn-gold" data-open-checkout data-produto="kit20">REVENDER</button>
+    </div>
+
+    <div class="motivo-card" style="border-color:#e0b856;">
+      <span class="icon">✂️</span>
+      <h4>Kit Barbearia</h4>
+      <p>10 unidades por R$ 79,95. Tenha sempre em mãos para clientes.</p>
+      <button class="btn-gold" data-open-checkout data-produto="kit10">BARBEARIA</button>
+    </div>
+  </div>
+</div>
+
+<!-- CTA FINAL -->
+<div class="container">
+  <div class="cta-final">
+    <p style="color:#b8af9c; margin-bottom:12px; font-size:1rem;">⚡ <strong style="color:#fff;">Oferta por tempo limitado</strong> — estoque reduzido!</p>
+    <a href="#kits" class="btn-gold" style="display:inline-block; text-decoration:none; padding:18px 50px; font-size:1.1rem;">🔥 QUERO GARANTIR O MEU KIT AGORA</a>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="container" style="margin-top:20px;">
+  <h2 class="section-title" style="font-size:1.3rem;">Dúvidas frequentes</h2>
+  <details class="faq-item" open>
+    <summary>Como funciona a entrega?</summary>
+    <div class="content">Pagamento confirmado = pedido separado imediatamente. Você recebe código de rastreio da JadLog.</div>
+  </details>
+  <details class="faq-item">
+    <summary>O Pix é seguro?</summary>
+    <div class="content">Sim! O Pix é a forma mais segura do Brasil, reconhecida pelo Banco Central.</div>
+  </details>
+  <details class="faq-item">
+    <summary>Prazo de entrega?</summary>
+    <div class="content">De 3 a 7 dias úteis, com rastreio em tempo real.</div>
+  </details>
+  <details class="faq-item">
+    <summary>Por que o preço é tão baixo?</summary>
+    <div class="content">Compramos direto do fabricante e repassamos a economia para você.</div>
+  </details>
+  <p class="disclaimer">Tônico Capilar Dom Pelo é um cosmético para cuidado diário dos fios. Resultados variam de pessoa pra pessoa.</p>
+</div>
+
+<footer>
+  <div class="container">Dom Pelo – Pagamento seguro via Pix. Entregas via JadLog.</div>
+</footer>
+
+<!-- MODAL CHECKOUT -->
+<div class="modal-overlay" id="checkoutOverlay">
+  <div class="modal">
+    <button class="modal__close" id="checkoutClose">✕</button>
+    <div class="modal__steps"><span id="stepDot1"></span><span id="stepDot2"></span><span id="stepDot3"></span></div>
+
+    <div id="phaseDados">
+      <h2>Seus dados</h2>
+      <p class="lede">Sem conta, sem senha. Só o necessário pra enviar seu pedido.</p>
+      <div class="product-pick">
+        <label class="product-option" data-produto="kit2"><div><strong>Kit 2 unidades</strong><span>120ml cada</span></div><span class="price">R$ 23,99</span></label>
+        <label class="product-option" data-produto="kit5"><div><strong>Kit 5 unidades</strong><span>120ml cada</span></div><span class="price">R$ 47,12</span></label>
+        <label class="product-option" data-produto="kit10"><div><strong>Kit 10 unidades</strong><span>120ml cada</span></div><span class="price">R$ 79,95</span></label>
+        <label class="product-option" data-produto="kit20"><div><strong>Kit 20 unidades</strong><span>120ml cada</span></div><span class="price">R$ 141,36</span></label>
+      </div>
+      <div class="field"><label for="fNome">Nome completo</label><input id="fNome" type="text" /><span class="field-error">Informe seu nome completo.</span></div>
+      <div class="field"><label for="fCpf">CPF</label><input id="fCpf" type="text" maxlength="14" placeholder="000.000.000-00" /><span class="field-error">CPF inválido.</span></div>
+      <div class="field"><label for="fTelefone">Telefone (com DDD)</label><input id="fTelefone" type="tel" placeholder="(00) 00000-0000" /><span class="field-error">Telefone inválido.</span></div>
+      <div class="field-row">
+        <div class="field"><label for="fCep">CEP</label><input id="fCep" type="text" maxlength="9" placeholder="00000-000" /></div>
+        <div class="field"><label for="fNumero">Número</label><input id="fNumero" type="text" /></div>
+      </div>
+      <div class="field"><label for="fRua">Rua</label><input id="fRua" type="text" /></div>
+      <div class="field-row">
+        <div class="field"><label for="fBairro">Bairro</label><input id="fBairro" type="text" /></div>
+        <div class="field"><label for="fCidade">Cidade</label><input id="fCidade" type="text" /></div>
+      </div>
+      <div class="field"><label for="fComplemento">Complemento (opcional)</label><input id="fComplemento" type="text" /></div>
+      <p class="modal-alert" id="dadosAlert"></p>
+      <button class="btn-gold" id="btnIrPagamento" style="width:100%; margin-top:8px;">CONTINUAR</button>
+    </div>
+
+    <div id="phasePix" style="display:none;">
+      <h2>Pagar com Pix</h2>
+      <p class="lede">Escaneie o QR ou use o código copia e cola.</p>
+      <div class="pix-box">
+        <img id="pixQr" src="" alt="QR Code" />
+        <div class="pix-copia"><input id="pixCopiaCola" readonly /><button id="btnCopiarPix">Copiar</button></div>
+        <div class="pix-status"><span class="spinner"></span> Aguardando pagamento…</div>
+      </div>
+    </div>
+
+    <div id="phaseSucesso" style="display:none;">
+      <div class="success-box">
+        <div class="success-icon">✓</div>
+        <h2>Pagamento confirmado!</h2>
+        <p class="lede">Seu pedido já está sendo preparado para envio.</p>
+        <div class="order-id" id="orderIdDisplay"></div>
+        <button class="btn-gold" id="btnFecharSucesso" style="width:100%;">FECHAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONSULTA -->
+<div class="modal-overlay" id="consultaOverlay">
+  <div class="modal">
+    <button class="modal__close" id="consultaClose">✕</button>
+    <h2>Consultar pedido</h2>
+    <p class="lede">Informe o CPF e o número do pedido.</p>
+    <div class="field"><label for="cCpf">CPF</label><input id="cCpf" type="text" placeholder="000.000.000-00" /></div>
+    <div class="field"><label for="cPedido">Número do pedido</label><input id="cPedido" type="text" /></div>
+    <p class="modal-alert" id="consultaAlert"></p>
+    <button class="btn-gold" id="btnBuscarPedido" style="width:100%;">BUSCAR</button>
+    <div id="consultaResultado" style="margin-top:18px;"></div>
+  </div>
+</div>
+
+<script>
+// ================= UTILIDADES =================
+function limparNumeros(str) { return (str || '').replace(/\D/g, ''); }
+function mascararCpf(v) {
+  v = limparNumeros(v).slice(0, 11);
+  return v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+function mascararTelefone(v) {
+  v = limparNumeros(v).slice(0, 11);
+  if (v.length <= 10) return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').trim();
+  return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').trim();
+}
+function cpfValido(cpfBruto) {
+  const cpf = limparNumeros(cpfBruto);
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  let soma = 0;
+  for (let i = 0; i < 9; i++) soma += Number(cpf[i]) * (10 - i);
+  let resto = (soma * 10) % 11;
+  if (resto === 10) resto = 0;
+  if (resto !== Number(cpf[9])) return false;
+  soma = 0;
+  for (let i = 0; i < 10; i++) soma += Number(cpf[i]) * (11 - i);
+  resto = (soma * 10) % 11;
+  if (resto === 10) resto = 0;
+  return resto === Number(cpf[10]);
+}
+
+const fCpf = document.getElementById('fCpf');
+const fTelefone = document.getElementById('fTelefone');
+const fCep = document.getElementById('fCep');
+fCpf.addEventListener('input', (e) => (e.target.value = mascararCpf(e.target.value)));
+fTelefone.addEventListener('input', (e) => (e.target.value = mascararTelefone(e.target.value)));
+fCep.addEventListener('input', (e) => {
+  let v = limparNumeros(e.target.value).slice(0, 8);
+  e.target.value = v.replace(/(\d{5})(\d)/, '$1-$2');
+});
+fCep.addEventListener('blur', async () => {
+  const cep = limparNumeros(fCep.value);
+  if (cep.length !== 8) return;
+  try {
+    const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const dado = await resp.json();
+    if (!dado.erro) {
+      document.getElementById('fRua').value = dado.logradouro || '';
+      document.getElementById('fBairro').value = dado.bairro || '';
+      document.getElementById('fCidade').value = dado.localidade ? `${dado.localidade} - ${dado.uf}` : '';
+      document.getElementById('fNumero').focus();
+    }
+  } catch {}
+});
+document.getElementById('cCpf').addEventListener('input', (e) => (e.target.value = mascararCpf(e.target.value)));
+
+// ================= PRECOS =================
+const PRECOS = { kit2: 23.99, kit5: 47.12, kit10: 79.95, kit20: 141.36 };
+
+// ================= CHECKOUT =================
+let produtoSelecionado = 'kit2';
+let pedidoAtual = null;
+let pollTimer = null;
+
+const overlay = document.getElementById('checkoutOverlay');
+const phaseDados = document.getElementById('phaseDados');
+const phasePix = document.getElementById('phasePix');
+const phaseSucesso = document.getElementById('phaseSucesso');
+const dots = [document.getElementById('stepDot1'), document.getElementById('stepDot2'), document.getElementById('stepDot3')];
+
+function marcarProduto(p) {
+  produtoSelecionado = p;
+  document.querySelectorAll('.product-option').forEach(el => el.classList.toggle('is-selected', el.dataset.produto === p));
+}
+function setFase(f) {
+  phaseDados.style.display = f === 1 ? 'block' : 'none';
+  phasePix.style.display = f === 2 ? 'block' : 'none';
+  phaseSucesso.style.display = f === 3 ? 'block' : 'none';
+  dots.forEach((d, i) => { d.classList.toggle('is-active', i === f - 1); d.classList.toggle('is-done', i < f - 1); });
+}
+function abrirCheckout(p) {
+  marcarProduto(p || 'kit2');
+  setFase(1);
+  document.getElementById('dadosAlert').classList.remove('is-visible');
+  overlay.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+function fecharCheckout() {
+  overlay.classList.remove('is-open');
+  document.body.style.overflow = '';
+  if (pollTimer) clearInterval(pollTimer);
+}
+document.querySelectorAll('[data-open-checkout]').forEach(btn => btn.addEventListener('click', () => abrirCheckout(btn.dataset.produto)));
+document.getElementById('checkoutClose').addEventListener('click', fecharCheckout);
+document.getElementById('btnFecharSucesso').addEventListener('click', fecharCheckout);
+overlay.addEventListener('click', (e) => { if (e.target === overlay) fecharCheckout(); });
+document.querySelectorAll('.product-option').forEach(el => el.addEventListener('click', () => marcarProduto(el.dataset.produto)));
+
+function mostrarErro(id, mostrar) { document.getElementById(id).parentElement.classList.toggle('has-error', mostrar); }
+
+document.getElementById('btnIrPagamento').addEventListener('click', async () => {
+  const nome = document.getElementById('fNome').value.trim();
+  const cpf = document.getElementById('fCpf').value;
+  const telefone = document.getElementById('fTelefone').value;
+  const cep = document.getElementById('fCep').value;
+  const numero = document.getElementById('fNumero').value.trim();
+  const rua = document.getElementById('fRua').value.trim();
+  const bairro = document.getElementById('fBairro').value.trim();
+  const cidade = document.getElementById('fCidade').value.trim();
+  const complemento = document.getElementById('fComplemento').value.trim();
+
+  let valido = true;
+  if (nome.split(' ').length < 2) { mostrarErro('fNome', true); valido = false; } else mostrarErro('fNome', false);
+  if (!cpfValido(cpf)) { mostrarErro('fCpf', true); valido = false; } else mostrarErro('fCpf', false);
+  if (limparNumeros(telefone).length < 10) { mostrarErro('fTelefone', true); valido = false; } else mostrarErro('fTelefone', false);
+
+  const alertEl = document.getElementById('dadosAlert');
+  if (!rua || !numero || !cidade) {
+    alertEl.textContent = 'Preencha o endereço completo.';
+    alertEl.classList.add('is-visible');
+    valido = false;
+  } else {
+    alertEl.classList.remove('is-visible');
+  }
+  if (!valido) return;
+
+  const btn = document.getElementById('btnIrPagamento');
+  btn.disabled = true;
+  btn.textContent = 'Gerando...';
+
+  try {
+    const valor = PRECOS[produtoSelecionado];
+    const descricao = `Dom Pelo - ${produtoSelecionado.toUpperCase()}`;
+    const cpfLimpo = limparNumeros(cpf);
+
+    const resp = await fetch('/.netlify/functions/deposit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: valor, description: descricao, payerName: nome, payerDocument: cpfLimpo })
+    });
+    const result = await resp.json();
+    if (!result.success) throw new Error(result.message || 'Erro ao gerar Pix');
+
+    pedidoAtual = result.transactionId;
+    document.getElementById('pixQr').src = `data:image/png;base64,${result.qrcodeUrl}`;
+    document.getElementById('pixCopiaCola').value = result.copyPaste;
+    setFase(2);
+    iniciarPolling();
+  } catch (err) {
+    alertEl.textContent = err.message || 'Tente de novo.';
+    alertEl.classList.add('is-visible');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'CONTINUAR';
+  }
+});
+
+document.getElementById('btnCopiarPix').addEventListener('click', () => {
+  const input = document.getElementById('pixCopiaCola');
+  input.select();
+  navigator.clipboard?.writeText(input.value);
+  const btn = document.getElementById('btnCopiarPix');
+  const original = btn.textContent;
+  btn.textContent = 'Copiado!';
+  setTimeout(() => (btn.textContent = original), 1500);
+});
+
+function iniciarPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    if (!pedidoAtual) return;
+    try {
+      const resp = await fetch('/.netlify/functions/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionId: pedidoAtual })
+      });
+      const result = await resp.json();
+      if (result.transaction && result.transaction.transactionState === 'COMPLETO') {
+        clearInterval(pollTimer);
+        document.getElementById('orderIdDisplay').textContent = pedidoAtual;
+        setFase(3);
+      }
+    } catch {}
+  }, 3000);
+}
+
+// CONSULTA
+const consultaOverlay = document.getElementById('consultaOverlay');
+function abrirConsulta() {
+  consultaOverlay.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('consultaResultado').innerHTML = '';
+  document.getElementById('consultaAlert').classList.remove('is-visible');
+}
+function fecharConsulta() { consultaOverlay.classList.remove('is-open'); document.body.style.overflow = ''; }
+document.querySelector('[data-consulta]')?.addEventListener('click', abrirConsulta);
+document.getElementById('consultaClose').addEventListener('click', fecharConsulta);
+consultaOverlay.addEventListener('click', (e) => { if (e.target === consultaOverlay) fecharConsulta(); });
+
+document.getElementById('btnBuscarPedido').addEventListener('click', async () => {
+  const cpf = document.getElementById('cCpf').value;
+  const pedidoId = document.getElementById('cPedido').value.trim();
+  const alertEl = document.getElementById('consultaAlert');
+  if (!cpfValido(cpf) || !pedidoId) {
+    alertEl.textContent = 'Informe CPF e número do pedido.';
+    alertEl.classList.add('is-visible');
+    return;
+  }
+  alertEl.classList.remove('is-visible');
+  try {
+    const resp = await fetch('/.netlify/functions/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transactionId: pedidoId })
+    });
+    const result = await resp.json();
+    const box = document.getElementById('consultaResultado');
+    if (!result.transaction) {
+      box.innerHTML = `<p style="color:#b8af9c;">Pedido não encontrado.</p>`;
+      return;
+    }
+    const t = result.transaction;
+    const status = t.transactionState === 'COMPLETO' ? '✅ Pago' : '⏳ Pendente';
+    box.innerHTML = `<div style="background:#211d17;border:1px solid #3a3226;border-radius:16px;padding:20px;">
+      <p><strong>Valor: R$ ${t.value?.toFixed(2) || '--'}</strong></p>
+      <p style="color:#b8af9c;">Status: ${status}</p>
+      <p style="color:#b8af9c;font-family:monospace;font-size:0.8rem;">ID: ${t.transactionId}</p>
+    </div>`;
+  } catch {
+    alertEl.textContent = 'Erro ao consultar. Tente novamente.';
+    alertEl.classList.add('is-visible');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[
+  { "id": 0, "name": "Superfície", "tone": "terra", "copy": "Vilas, telhados e o primeiro pulo. O chão ainda te conhece." },
+  { "id": 1, "name": "Céu e Nuvens", "tone": "vento", "copy": "Plataformas de algodão. Um passo em falso e a nuvem some." },
+  { "id": 2, "name": "Estratosfera", "tone": "metal", "copy": "Rastros de avião. O ar rarefaz e o perigo ganha asas." },
+  { "id": 3, "name": "Espaço", "tone": "vazio", "copy": "Estrelas fixas, gravidade teimosa e sombrinhas à deriva." },
+  { "id": 4, "name": "Órbita Distante", "tone": "anel", "copy": "Um planeta com anéis observa cada salto." },
+  { "id": 5, "name": "Paraíso", "tone": "ouro", "copy": "O céu vira ouro e violeta. Aqui o multiplicador respira." },
+  { "id": 6, "name": "Aurora Cósmica", "tone": "aurora", "copy": "Faixas verdes e púrpuras. O mundo inteiro é um palco." },
+  { "id": 7, "name": "Portal Estelar", "tone": "portal", "copy": "Elipses que giram. A realidade começa a dobrar." },
+  { "id": 8, "name": "Além do Infinito", "tone": "mito", "copy": "Quadrados rotativos no negro. Não existe teto." }
+]

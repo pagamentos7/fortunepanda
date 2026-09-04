@@ -1,0 +1,16 @@
+{
+  "name": "sky-climb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sky Climb — hangar, skins e ecossistema",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.9.0"
+  }
+}
