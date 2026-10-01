@@ -9,7 +9,15 @@ const SkinArt = (() => {
     { id: "moon-ninja", name: "Ninja Lunar", price: 0, rarity: "raro", role: "máscara", blurb: "Faixa e capuz no vento." },
     { id: "sky-knight", name: "Cavaleiro do Céu", price: 0, rarity: "mito", role: "capa", blurb: "Elmo alado e emblema no peito." },
     { id: "venom-veil", name: "Véu Sombrio", price: 0, rarity: "épico", role: "traje", blurb: "Simbiose verde-negra." },
-    { id: "star-panda", name: "Panda Estelar", price: 0, rarity: "épico", role: "traje", blurb: "Viseira de órbita." }
+    { id: "star-panda", name: "Panda Estelar", price: 0, rarity: "épico", role: "traje", blurb: "Viseira de órbita." },
+    // Novas Skins Adicionadas
+    { id: "cyber-samurai", name: "Samurai Cibernético", price: 0, rarity: "mito", role: "armadura", blurb: "Capacete néon com chifres de luz." },
+    { id: "dragon-god", name: "Deus Dragão", price: 0, rarity: "mito", role: "traje", blurb: "Escamas e chifres dourados lendários." },
+    { id: "frog-king", name: "Rei Sapo", price: 0, rarity: "raro", role: "traje", blurb: "Capuz anfíbio com coroa real." },
+    { id: "astro-bear", name: "Urso Astronauta", price: 0, rarity: "lendário", role: "traje", blurb: "Cúpula espacial e brilho estelar." },
+    { id: "fire-demon", name: "Demónio de Fogo", price: 0, rarity: "épico", role: "traje", blurb: "Chamas vivas e olhos em brasa." },
+    { id: "ghost-spirit", name: "Espírito Fantasma", price: 0, rarity: "épico", role: "capa", blurb: "Manto roxo translúcido místico." },
+    { id: "golden-legend", name: "Lenda de Ouro", price: 0, rarity: "mito", role: "traje", blurb: "Folheado a ouro puro reluzente." }
   ];
 
   function cape(ctx, t, color, length) {
@@ -179,6 +187,80 @@ const SkinArt = (() => {
       ctx.stroke();
       ctx.fillStyle = "#3d7ad6";
       ctx.fillRect(12, 2, 6, 10);
+    } else if (id === "cyber-samurai") {
+      pandaFace(ctx, "#0d1b2a", "#1b263b");
+      ctx.fillStyle = "#e0e1dd";
+      ctx.fillRect(-14, -12, 28, 6);
+      ctx.fillStyle = "#00f5d4";
+      ctx.fillRect(-10, -10, 20, 2);
+      ctx.fillStyle = "#7b2cbf";
+      ctx.beginPath();
+      ctx.moveTo(-12, -12); ctx.lineTo(-18, -26); ctx.lineTo(-8, -14);
+      ctx.moveTo(12, -12); ctx.lineTo(18, -26); ctx.lineTo(8, -14);
+      ctx.fill();
+    } else if (id === "dragon-god") {
+      pandaFace(ctx, "#3a0007", "#ffb703");
+      ctx.fillStyle = "#d00000";
+      ctx.beginPath();
+      ctx.ellipse(0, -2, 16, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#ffb703";
+      ctx.beginPath();
+      ctx.moveTo(-10, -14); ctx.lineTo(-20, -32); ctx.lineTo(-4, -18);
+      ctx.moveTo(10, -14); ctx.lineTo(20, -32); ctx.lineTo(4, -18);
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(-6, -4, 3, 3);
+      ctx.fillRect(3, -4, 3, 3);
+    } else if (id === "frog-king") {
+      pandaFace(ctx, "#1b4332", "#52b788");
+      ctx.fillStyle = "#d4af37";
+      ctx.beginPath();
+      ctx.moveTo(-10, -18); ctx.lineTo(-12, -28); ctx.lineTo(-5, -20);
+      ctx.lineTo(0, -29); ctx.lineTo(5, -20); ctx.lineTo(12, -28); ctx.lineTo(10, -18);
+      ctx.closePath();
+      ctx.fill();
+    } else if (id === "astro-bear") {
+      pandaFace(ctx, "#1d3557", "#f1faee");
+      ctx.strokeStyle = "rgba(69, 123, 157, 0.7)";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 22, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+      ctx.beginPath();
+      ctx.ellipse(-6, -8, 8, 4, -0.4, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (id === "fire-demon") {
+      pandaFace(ctx, "#370617", "#dc2f02");
+      ctx.fillStyle = "#ffba08";
+      ctx.beginPath();
+      ctx.arc(-7, -4, 3, 0, Math.PI * 2);
+      ctx.arc(7, -4, 3, 0, Math.PI * 2);
+      ctx.fill();
+      const fireY = Math.sin(t * 8) * 3;
+      ctx.fillStyle = "#f48c06";
+      ctx.beginPath();
+      ctx.moveTo(-12, -16); ctx.lineTo(-16, -30 + fireY); ctx.lineTo(-6, -20);
+      ctx.moveTo(12, -16); ctx.lineTo(16, -30 - fireY); ctx.lineTo(6, -20);
+      ctx.fill();
+    } else if (id === "ghost-spirit") {
+      ctx.save();
+      ctx.globalAlpha = 0.85;
+      cape(ctx, t, "#3c096c", 36);
+      pandaFace(ctx, "#10002b", "#e0aaff");
+      ctx.fillStyle = "#7b2cbf";
+      ctx.beginPath();
+      ctx.arc(-7, -4, 4, 0, Math.PI * 2);
+      ctx.arc(7, -4, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    } else if (id === "golden-legend") {
+      pandaFace(ctx, "#785109", "#ffd700");
+      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.beginPath();
+      ctx.ellipse(-5, -6, 6, 3, -0.3, 0, Math.PI * 2);
+      ctx.fill();
     } else {
       pandaFace(ctx);
     }
