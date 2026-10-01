@@ -706,20 +706,39 @@ const Game = (() => {
     const g = ctx.createRadialGradient(-r * 0.3, -r * 0.35, r * 0.1, 0, 0, r);
     g.addColorStop(0, "#ffffff"); g.addColorStop(0.45, "#e6ebef"); g.addColorStop(0.8, "#bcc5cd"); g.addColorStop(1, "#8a94a0"); return g;
   }
+  // ---- Moedas com a arte do coin-art.js (carregar antes do game.js) ----
+  const COIN_TIER = { c10: 0, c25: 1, c50: 2, real1: 3 };
+  const COIN_COUNTRIES = ["br", "co", "pe", "mx", "ar"];
+  let coinCountry = "br";
+  try { const sc = localStorage.getItem("skyCountry"); if (COIN_COUNTRIES.includes(sc)) coinCountry = sc; } catch (e) {}
+  const coinSprites = {};
+  function coinSprite(type) {
+    const key = coinCountry + ":" + type;
+    if (coinSprites[key]) return coinSprites[key];
+    const CA = window.CoinArt; if (!CA) return null;
+    const ct = CA.COUNTRIES.find((c) => c.id === coinCountry) || CA.COUNTRIES[0];
+    const spec = ct.coins[COIN_TIER[type]]; if (!spec) return null;
+    const mk = (side) => {
+      const src = CA.faceCanvas(spec, side), c = document.createElement("canvas"); c.width = c.height = 128;
+      const g = c.getContext("2d"); g.beginPath(); g.arc(64, 64, 62, 0, Math.PI * 2); g.clip(); g.drawImage(src, 0, 0, 128, 128); return c;
+    };
+    return (coinSprites[key] = { rev: mk("rev"), obv: mk("obv") });
+  }
   function drawCoin(x, y, type) {
     const cfg = COIN_TYPES[type] || COIN_TYPES.real1; const r = cfg.r;
-    const t = globalTime * 3; const scaleX = Math.abs(Math.cos(t)) * 0.7 + 0.3; const pulse = 1 + Math.sin(globalTime * 6) * 0.1;
+    const t = globalTime * 3; const cs = Math.cos(t); const scaleX = Math.abs(cs) * 0.7 + 0.3; const pulse = 1 + Math.sin(globalTime * 6) * 0.1;
+    const spr = coinSprite(type);
     ctx.save(); ctx.translate(x, y); ctx.scale(scaleX, 1 * pulse);
     ctx.fillStyle = "rgba(0,0,0,0.25)"; ctx.beginPath(); ctx.arc(1, 3, r, 0, Math.PI * 2); ctx.fill();
-    if (cfg.bimetal) {
+    if (spr) {
+      ctx.drawImage(cs >= 0 ? spr.rev : spr.obv, -r, -r, r * 2, r * 2);
+    } else if (cfg.bimetal) {
       ctx.fillStyle = goldGrad(r); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
       const coreR = r * 0.6; ctx.fillStyle = silverGrad(coreR); ctx.beginPath(); ctx.arc(0, 0, coreR, 0, Math.PI * 2); ctx.fill();
-      if (scaleX > 0.55) { ctx.fillStyle = "#6b7480"; ctx.font = `bold ${(coreR * 1.2).toFixed(1)}px Outfit, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(cfg.label, 0, 0.5); }
     } else {
       ctx.fillStyle = cfg.tone === "gold" ? goldGrad(r) : silverGrad(r); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
-      if (scaleX > 0.55) { ctx.fillStyle = cfg.tone === "gold" ? "#7a5c22" : "#6b7480"; ctx.font = `bold ${(r * 0.85).toFixed(1)}px Outfit, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(cfg.label, 0, 0.5); }
     }
-    ctx.fillStyle = "rgba(255,255,255,.7)"; ctx.beginPath(); ctx.ellipse(-r * 0.3, -r * 0.35, r * 0.26, r * 0.15, -0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.ellipse(-r * 0.3, -r * 0.35, r * 0.26, r * 0.15, -0.5, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
   function drawObjects() {
@@ -820,7 +839,9 @@ const Game = (() => {
       player.y = cameraY + 430;
     },
     getPhase() { return startHeight; },
-    isPlaying() { return gameState === "playing"; }
+    isPlaying() { return gameState === "playing"; },
+    setCoinCountry(id) { if (!COIN_COUNTRIES.includes(id)) return; coinCountry = id; try { localStorage.setItem("skyCountry", id); } catch (e) {} },
+    getCoinCountry() { return coinCountry; }
   };
 })();
 window.Game = Game;
