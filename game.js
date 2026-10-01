@@ -39,7 +39,7 @@ const Game = (() => {
     hud.hidden = false;
     if (xel) xel.textContent = "x" + n;
     hud.classList.toggle("fever", n >= 8);
-    if (n === 8 && !fever) { fever = true; AudioKit.fever?.(); toast("FEVER"); document.querySelector(".game-panel")?.classList.add("fever-glow"); }
+    if (n === 8 && !fever) { fever = true; AudioKit.fever(); toast("FEVER"); document.querySelector(".game-panel")?.classList.add("fever-glow"); }
     if (n > 8) fever = true;
   }
   function addCoins(cents, x, y) {
@@ -167,9 +167,8 @@ const Game = (() => {
     lastPlatX = p.x + p.w / 2;
     p.drift = p.type === TYPES.MOVE ? 55 + Math.random() * 70 : 0;
     p.dir = Math.random() < 0.5 ? 1 : -1;
-    // ALTERAÇÃO: reduz a chance de moeda para 1/3 do valor original
     p.hasCoin = Math.random() < (0.1 + (fever ? 0.06 : 0));
-    p.coinY = p.y - 38;
+    p.coinY = p.y - 55; // Ajustado para flutuar acima da moeda maior
     if (p.hasCoin) p.coinType = pickCoinType();
     p.jackpot = Math.random() < 0.05;
   }
@@ -256,7 +255,7 @@ const Game = (() => {
     saveLeft = 1; brokePB = false; warnT = 0;
     sessionHeat();
     if (heat >= 2) toast("SEQUÊNCIA x" + heat);
-    AudioKit.heat?.();
+    AudioKit.heat();
     setCombo(0);
     planeTimer = 1; umbrellaTimer = 0; objects = []; resetPlatforms(); gameState = "playing";
     const overlay = $("hub-overlay");
@@ -280,8 +279,8 @@ const Game = (() => {
       const pity = 40 + (12 - gap) * 8;
       addCoins(pity);
       gained += 80;
-      AudioKit.near?.();
-    } else if (brokePB) AudioKit.record?.();
+      AudioKit.near();
+    } else if (brokePB) AudioKit.record();
     else AudioKit.fall();
     const prevPoints = points;
     points += gained;
@@ -401,13 +400,13 @@ const Game = (() => {
           const perfect = Math.abs(player.x - cx) < Math.max(8, p.w * 0.16);
           comboT = 1.25;
           setCombo(combo + 1);
-          AudioKit.combo?.(combo);
+          AudioKit.combo(combo);
           if (perfect) { AudioKit.perfect(); addCoins(15, player.x, p.y); floatText(player.x, p.y - 18, "PERFEITO", "#fff6c2"); bumpShake(4); }
           else bumpShake(combo >= 8 ? 3 : 1.6);
           if (p.jackpot) {
             p.jackpot = false;
             addCoins(180, player.x, p.y);
-            AudioKit.jackpot?.();
+            AudioKit.jackpot();
             toast("JACKPOT");
             bumpShake(5);
           }
@@ -437,7 +436,7 @@ const Game = (() => {
           const pull = Math.hypot(player.x - cx, player.y - p.coinY);
           if (pull < 160) { p.coinY += (player.y - p.coinY) * dt * 8; p.x += ((player.x - p.w / 2) - p.x) * dt * 3; }
         }
-        if (Math.hypot(player.x - (p.x + p.w / 2), player.y - p.coinY) < 40) {
+        if (Math.hypot(player.x - (p.x + p.w / 2), player.y - p.coinY) < 65) { // Distância de coleta aumentada para 65
           const cfg = COIN_TYPES[p.coinType] || COIN_TYPES.real1;
           p.hasCoin = false; addCoins(cfg.value, p.x + p.w / 2, p.coinY); AudioKit.collect();
           spawnBurst(p.x + p.w / 2, p.coinY, 12, cfg.burst, { spread: 160, upBias: 70, life: 0.5, size: 2.8 });
@@ -460,12 +459,12 @@ const Game = (() => {
     if (!brokePB && metersNow > recordM && recordM > 0 && metersNow > Math.floor(startHeight / 10)) {
       brokePB = true;
       recordM = metersNow;
-      AudioKit.record?.();
+      AudioKit.record();
       toast("NOVO RECORDE");
       bumpShake(5);
     } else if (metersNow > recordM) recordM = metersNow;
     const mile = Math.floor(bestHeight / 500);
-    if (mile > lastMilestone) { lastMilestone = mile; AudioKit.fever?.(); toast(Math.floor(bestHeight / 10) + "m"); bumpShake(4); }
+    if (mile > lastMilestone) { lastMilestone = mile; AudioKit.fever(); toast(Math.floor(bestHeight / 10) + "m"); bumpShake(4); }
     ensurePlatforms();
     platforms.forEach((p) => { if (p.active && p.y > cameraY + H + 80) p.active = false; });
     updateObjects(dt);
@@ -493,7 +492,7 @@ const Game = (() => {
     const dist = deathLine - player.y;
     const danger = Math.max(0, Math.min(1, 1 - dist / 230));
     warnT -= dt;
-    if (danger > 0.62 && warnT <= 0) { AudioKit.warn?.(); warnT = 0.42; }
+    if (danger > 0.62 && warnT <= 0) { AudioKit.warn(); warnT = 0.42; }
     updateBiomeChip();
     if (player.y > deathLine && player.rocket <= 0) {
       if (saveLeft > 0 && (combo >= 3 || fever || heat >= 3)) {
@@ -502,7 +501,7 @@ const Game = (() => {
         player.vy = player.jumpForce * 1.85;
         player.squashPulse = 1.2;
         toast("SEGUNDA CHANCE");
-        AudioKit.clutch?.();
+        AudioKit.clutch();
         bumpShake(6);
       } else endGame();
     }
@@ -706,7 +705,6 @@ const Game = (() => {
     const g = ctx.createRadialGradient(-r * 0.3, -r * 0.35, r * 0.1, 0, 0, r);
     g.addColorStop(0, "#ffffff"); g.addColorStop(0.45, "#e6ebef"); g.addColorStop(0.8, "#bcc5cd"); g.addColorStop(1, "#8a94a0"); return g;
   }
-  // ---- Moedas com a arte do coin-art.js (carregar antes do game.js) ----
   const COIN_TIER = { c10: 0, c25: 1, c50: 2, real1: 3 };
   const COIN_COUNTRIES = ["br", "co", "pe", "mx", "ar"];
   let coinCountry = "br";
