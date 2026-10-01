@@ -18,6 +18,43 @@ const Game = (() => {
   let powerTimer = 2.2;
   let lastMilestone = 0;
 
+  // --- SUPORTE DE MOEDA E PAÍS ---
+  const COIN_COUNTRIES = ["br", "co", "pe", "mx", "ar"];
+  let coinCountry = "br";
+  try {
+    const sc = localStorage.getItem("skyCountry");
+    if (COIN_COUNTRIES.includes(sc)) coinCountry = sc;
+  } catch (e) {}
+
+  const CURRENCY_MAP = {
+    br: { symbol: "R$ ", div: 100, sep: "," },
+    co: { symbol: "$ ", div: 1, sep: "." },
+    pe: { symbol: "S/ ", div: 100, sep: "." },
+    mx: { symbol: "$ ", div: 100, sep: "." },
+    ar: { symbol: "$ ", div: 1, sep: "." }
+  };
+
+  function formatMoney(cents) {
+    const cur = CURRENCY_MAP[coinCountry] || CURRENCY_MAP.br;
+    const val = cents / cur.div;
+    return cur.symbol + val.toFixed(cur.div === 1 ? 0 : 2).replace(".", cur.sep);
+  }
+
+  function updateCoinUI() {
+    const el = $("coin-val");
+    if (el) el.textContent = formatMoney(totalCoins);
+    const wallet = $("wallet-coins");
+    if (wallet) wallet.textContent = formatMoney(totalCoins);
+  }
+
+  // --- GANHO ÚNICO DE MOEDAS: SEM MULTIPLICADORES OU BÔNUS ---
+  function addCoins(cents, x, y) {
+    totalCoins += cents;
+    updateCoinUI();
+    triggerChipPop("coin-val");
+    if (x != null) floatText(x, y, "+" + formatMoney(cents), "#ffe27a");
+  }
+
   function toast(msg) {
     const el = $("game-toast");
     if (!el) return;
@@ -26,10 +63,13 @@ const Game = (() => {
     void el.offsetWidth;
     el.classList.add("show");
   }
+
   function floatText(x, y, text, color) {
     floaters.push({ x, y, text, color: color || "#ffe27a", life: 0.85 });
   }
+
   function bumpShake(n) { shake = Math.min(6, shake + n); }
+
   function setCombo(n) {
     combo = n; comboT = 1.25;
     const hud = $("combo-hud");
@@ -39,17 +79,10 @@ const Game = (() => {
     hud.hidden = false;
     if (xel) xel.textContent = "x" + n;
     hud.classList.toggle("fever", n >= 8);
-    if (n === 8 && !fever) { fever = true; AudioKit.fever?.(); toast("FEVER"); document.querySelector(".game-panel")?.classList.add("fever-glow"); }
+    if (n === 8 && !fever) { fever = true; AudioKit.fever(); toast("FEVER"); document.querySelector(".game-panel")?.classList.add("fever-glow"); }
     if (n > 8) fever = true;
   }
-  function addCoins(cents, x, y) {
-    const mult = 1 + Math.min(10, combo) * 0.12 + (fever ? 0.4 : 0);
-    const got = Math.round(cents * mult);
-    totalCoins += got;
-    updateCoinUI();
-    triggerChipPop("coin-val");
-    if (x != null) floatText(x, y, "+" + formatMoney(got), "#ffe27a");
-  }
+
   const player = {
     x: W / 2, y: 560, vx: 0, vy: 0, radius: 20, moveSpeed: 560, jumpForce: -820,
     gravity: 1980, fallClamp: 1180, inputDir: 0, umbrella: false, umbrellaTimer: 0, squashPulse: 0, tilt: 0,
@@ -65,6 +98,7 @@ const Game = (() => {
       particles.push({ x, y, vx: Math.cos(ang) * spd * 0.6, vy: Math.sin(ang) * spd * 0.6 - upBias * Math.random(), life: life * (0.6 + Math.random() * 0.7), maxLife: life, size: size * (0.6 + Math.random() * 0.8), color: colors[(Math.random() * colors.length) | 0], grav });
     }
   }
+
   function updateParticles(dt) {
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
@@ -72,6 +106,7 @@ const Game = (() => {
       if (p.life <= 0) { particles[i] = particles[particles.length - 1]; particles.pop(); }
     }
   }
+
   function drawParticles() {
     for (const p of particles) {
       const sy = p.y - cameraY;
@@ -83,13 +118,16 @@ const Game = (() => {
     }
     ctx.globalAlpha = 1;
   }
+
   function triggerChipPop(valId) {
     const el = $(valId); if (!el) return;
     el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
     const chip = el.closest(".hud-chip");
     if (chip) { chip.classList.remove("pop"); void chip.offsetWidth; chip.classList.add("pop"); }
   }
+
   function animateNumber(el, from, to, duration, fmt) {
+    if (!el) return;
     const start = performance.now();
     function step(now) {
       const t = Math.min(1, (now - start) / duration);
@@ -104,7 +142,7 @@ const Game = (() => {
   function updateBiomeChip() {
     const name = getBiome().name;
     const el = $("biome-val");
-    if (name !== lastBiomeName) {
+    if (el && name !== lastBiomeName) {
       lastBiomeName = name;
       el.classList.add("fade");
       AudioKit.biome(getBiome().type);
@@ -128,6 +166,7 @@ const Game = (() => {
     { name: "Portal Estelar", start: 14000, end: 17000, sky1: "#1a0b3d", sky2: "#ff2fb0", type: 7 },
     { name: "Além do Infinito", start: 17000, end: 999999, sky1: "#05010f", sky2: "#160029", type: 8 }
   ];
+
   function heightNow() { return Math.max(0, -cameraY); }
   function getBiome(h = heightNow()) { return biomes.find((b) => h >= b.start && h < b.end) || biomes[biomes.length - 1]; }
   function difficulty(h) { return Math.min(1, Math.max(0, (h - 300) / 16000)); }
@@ -140,12 +179,14 @@ const Game = (() => {
     if (r < spring + move + cloud) return TYPES.CLOUD;
     return TYPES.DIRT;
   }
+
   const COIN_TYPES = {
     real1: { r: 20, label: "1", value: 100, bimetal: true, burst: ["#eec969", "#fff6d8", "#c99a3a"] },
     c50: { r: 14, label: "50", value: 50, tone: "silver", burst: ["#e6ebef", "#ffffff", "#aab4bd"] },
     c25: { r: 13, label: "25", value: 25, tone: "gold", burst: ["#eec969", "#fff2c9", "#b8903a"] },
     c10: { r: 10, label: "10", value: 10, tone: "gold", burst: ["#eec969", "#fff2c9", "#b8903a"] }
   };
+
   function pickCoinType() {
     const r = Math.random();
     if (r < 0.06) return "real1";
@@ -167,12 +208,12 @@ const Game = (() => {
     lastPlatX = p.x + p.w / 2;
     p.drift = p.type === TYPES.MOVE ? 55 + Math.random() * 70 : 0;
     p.dir = Math.random() < 0.5 ? 1 : -1;
-    // ALTERAÇÃO: reduz a chance de moeda para 1/3 do valor original
     p.hasCoin = Math.random() < (0.1 + (fever ? 0.06 : 0));
-    p.coinY = p.y - 38;
+    p.coinY = p.y - 55;
     if (p.hasCoin) p.coinType = pickCoinType();
     p.jackpot = Math.random() < 0.05;
   }
+
   let highestSpawnY = 0;
   function resetPlatforms() {
     platforms.forEach((p) => (p.active = false));
@@ -183,6 +224,7 @@ const Game = (() => {
     lastPlatX = p0.x + p0.w / 2;
     for (let i = 0; i < 12; i++) { highestSpawnY -= 68 + Math.random() * 40; spawnPlatformAt(highestSpawnY, startHeight); }
   }
+
   function ensurePlatforms() {
     while (highestSpawnY > cameraY - 950) {
       const d = difficulty(heightNow());
@@ -207,12 +249,14 @@ const Game = (() => {
       window.addEventListener("deviceorientation", handleOrientation);
     }
   }
+
   function handleOrientation(e) {
     if (e.gamma == null) return;
     gyroActive = true;
     const gamma = Math.max(-30, Math.min(30, e.gamma));
     gyroDir = Math.abs(gamma) < 2 ? 0 : gamma / 18;
   }
+
   canvas.addEventListener("touchstart", (e) => { pointerActive = true; pointerX = e.touches[0].clientX; }, { passive: true });
   canvas.addEventListener("touchmove", (e) => { if (pointerActive) pointerX = e.touches[0].clientX; }, { passive: true });
   canvas.addEventListener("touchend", () => { pointerActive = false; }, { passive: true });
@@ -234,9 +278,6 @@ const Game = (() => {
     if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") keyRight = false;
   });
 
-  function formatMoney(cents) { return "R$ " + (cents / 100).toFixed(2).replace(".", ","); }
-  function updateCoinUI() { $("coin-val").textContent = formatMoney(totalCoins); }
-
   let recordM = 0, saveLeft = 1, brokePB = false, warnT = 0, heat = 1;
 
   function sessionHeat() {
@@ -256,7 +297,7 @@ const Game = (() => {
     saveLeft = 1; brokePB = false; warnT = 0;
     sessionHeat();
     if (heat >= 2) toast("SEQUÊNCIA x" + heat);
-    AudioKit.heat?.();
+    AudioKit.heat();
     setCombo(0);
     planeTimer = 1; umbrellaTimer = 0; objects = []; resetPlatforms(); gameState = "playing";
     const overlay = $("hub-overlay");
@@ -277,11 +318,9 @@ const Game = (() => {
     const gap = recordM - meters;
     const near = !brokePB && recordM > 0 && gap > 0 && gap <= 12;
     if (near) {
-      const pity = 40 + (12 - gap) * 8;
-      addCoins(pity);
       gained += 80;
-      AudioKit.near?.();
-    } else if (brokePB) AudioKit.record?.();
+      AudioKit.near();
+    } else if (brokePB) AudioKit.record();
     else AudioKit.fall();
     const prevPoints = points;
     points += gained;
@@ -316,6 +355,7 @@ const Game = (() => {
     const kind = kinds[(Math.random() * kinds.length) | 0];
     objects.push({ kind, x: 36 + Math.random() * (W - 72), y: cameraY + 90 + Math.random() * 280, t: 0 });
   }
+
   function updateObjects(dt) {
     globalTime += dt;
     const d = difficulty(heightNow());
@@ -358,7 +398,7 @@ const Game = (() => {
             player.magnet = 7; AudioKit.magnet(); toast("ÍMÃ");
             spawnBurst(o.x, o.y, 14, ["#7ad0ff", "#fff"], { spread: 180, upBias: 80, life: 0.5, size: 3 });
           } else {
-            AudioKit.gem(); addCoins(80, o.x, o.y); bumpShake(3); toast("GEMA");
+            AudioKit.gem(); bumpShake(3); toast("GEMA");
             spawnBurst(o.x, o.y, 16, ["#b388ff", "#fff", "#ffe27a"], { spread: 200, upBias: 120, life: 0.55, size: 3.4 });
           }
           objects.splice(i, 1);
@@ -401,13 +441,12 @@ const Game = (() => {
           const perfect = Math.abs(player.x - cx) < Math.max(8, p.w * 0.16);
           comboT = 1.25;
           setCombo(combo + 1);
-          AudioKit.combo?.(combo);
-          if (perfect) { AudioKit.perfect(); addCoins(15, player.x, p.y); floatText(player.x, p.y - 18, "PERFEITO", "#fff6c2"); bumpShake(4); }
+          AudioKit.combo(combo);
+          if (perfect) { AudioKit.perfect(); floatText(player.x, p.y - 18, "PERFEITO", "#fff6c2"); bumpShake(4); }
           else bumpShake(combo >= 8 ? 3 : 1.6);
           if (p.jackpot) {
             p.jackpot = false;
-            addCoins(180, player.x, p.y);
-            AudioKit.jackpot?.();
+            AudioKit.jackpot();
             toast("JACKPOT");
             bumpShake(5);
           }
@@ -437,9 +476,11 @@ const Game = (() => {
           const pull = Math.hypot(player.x - cx, player.y - p.coinY);
           if (pull < 160) { p.coinY += (player.y - p.coinY) * dt * 8; p.x += ((player.x - p.w / 2) - p.x) * dt * 3; }
         }
-        if (Math.hypot(player.x - (p.x + p.w / 2), player.y - p.coinY) < 40) {
+        if (Math.hypot(player.x - (p.x + p.w / 2), player.y - p.coinY) < 65) {
           const cfg = COIN_TYPES[p.coinType] || COIN_TYPES.real1;
-          p.hasCoin = false; addCoins(cfg.value, p.x + p.w / 2, p.coinY); AudioKit.collect();
+          p.hasCoin = false;
+          addCoins(cfg.value, p.x + p.w / 2, p.coinY);
+          AudioKit.collect();
           spawnBurst(p.x + p.w / 2, p.coinY, 12, cfg.burst, { spread: 160, upBias: 70, life: 0.5, size: 2.8 });
         }
       }
@@ -460,12 +501,12 @@ const Game = (() => {
     if (!brokePB && metersNow > recordM && recordM > 0 && metersNow > Math.floor(startHeight / 10)) {
       brokePB = true;
       recordM = metersNow;
-      AudioKit.record?.();
+      AudioKit.record();
       toast("NOVO RECORDE");
       bumpShake(5);
     } else if (metersNow > recordM) recordM = metersNow;
     const mile = Math.floor(bestHeight / 500);
-    if (mile > lastMilestone) { lastMilestone = mile; AudioKit.fever?.(); toast(Math.floor(bestHeight / 10) + "m"); bumpShake(4); }
+    if (mile > lastMilestone) { lastMilestone = mile; AudioKit.fever(); toast(Math.floor(bestHeight / 10) + "m"); bumpShake(4); }
     ensurePlatforms();
     platforms.forEach((p) => { if (p.active && p.y > cameraY + H + 80) p.active = false; });
     updateObjects(dt);
@@ -478,8 +519,8 @@ const Game = (() => {
       if (floaters[i].life <= 0) floaters.splice(i, 1);
     }
     shake = Math.max(0, shake - dt * 28);
-    $("height-val").textContent = metersNow + "m";
-    $("mult-val").textContent = (multiplier() * (1 + Math.min(10, combo) * 0.05) * (1 + (heat - 1) * 0.08)).toFixed(2) + "x";
+    const hVal = $("height-val"); if (hVal) hVal.textContent = metersNow + "m";
+    const mVal = $("mult-val"); if (mVal) mVal.textContent = (multiplier() * (1 + Math.min(10, combo) * 0.05) * (1 + (heat - 1) * 0.08)).toFixed(2) + "x";
     const ghost = $("ghost-chip");
     if (ghost) {
       if (recordM > 0 && metersNow < recordM) ghost.textContent = "faltam " + (recordM - metersNow) + "m";
@@ -493,7 +534,7 @@ const Game = (() => {
     const dist = deathLine - player.y;
     const danger = Math.max(0, Math.min(1, 1 - dist / 230));
     warnT -= dt;
-    if (danger > 0.62 && warnT <= 0) { AudioKit.warn?.(); warnT = 0.42; }
+    if (danger > 0.62 && warnT <= 0) { AudioKit.warn(); warnT = 0.42; }
     updateBiomeChip();
     if (player.y > deathLine && player.rocket <= 0) {
       if (saveLeft > 0 && (combo >= 3 || fever || heat >= 3)) {
@@ -502,7 +543,7 @@ const Game = (() => {
         player.vy = player.jumpForce * 1.85;
         player.squashPulse = 1.2;
         toast("SEGUNDA CHANCE");
-        AudioKit.clutch?.();
+        AudioKit.clutch();
         bumpShake(6);
       } else endGame();
     }
@@ -706,11 +747,7 @@ const Game = (() => {
     const g = ctx.createRadialGradient(-r * 0.3, -r * 0.35, r * 0.1, 0, 0, r);
     g.addColorStop(0, "#ffffff"); g.addColorStop(0.45, "#e6ebef"); g.addColorStop(0.8, "#bcc5cd"); g.addColorStop(1, "#8a94a0"); return g;
   }
-  // ---- Moedas com a arte do coin-art.js (carregar antes do game.js) ----
   const COIN_TIER = { c10: 0, c25: 1, c50: 2, real1: 3 };
-  const COIN_COUNTRIES = ["br", "co", "pe", "mx", "ar"];
-  let coinCountry = "br";
-  try { const sc = localStorage.getItem("skyCountry"); if (COIN_COUNTRIES.includes(sc)) coinCountry = sc; } catch (e) {}
   const coinSprites = {};
   function coinSprite(type) {
     const key = coinCountry + ":" + type;
@@ -724,6 +761,7 @@ const Game = (() => {
     };
     return (coinSprites[key] = { rev: mk("rev"), obv: mk("obv") });
   }
+
   function drawCoin(x, y, type) {
     const cfg = COIN_TYPES[type] || COIN_TYPES.real1; const r = cfg.r;
     const t = globalTime * 3; const cs = Math.cos(t); const scaleX = Math.abs(cs) * 0.7 + 0.3; const pulse = 1 + Math.sin(globalTime * 6) * 0.1;
@@ -739,8 +777,18 @@ const Game = (() => {
       ctx.fillStyle = cfg.tone === "gold" ? goldGrad(r) : silverGrad(r); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
     }
     ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.ellipse(-r * 0.3, -r * 0.35, r * 0.26, r * 0.15, -0.5, 0, Math.PI * 2); ctx.fill();
+
+    if (!spr) {
+      ctx.fillStyle = cfg.bimetal ? "#1a1a1a" : (cfg.tone === "gold" ? "#4a3300" : "#222c35");
+      ctx.font = `900 ${Math.round(r * (cfg.label.length > 2 ? 0.65 : 0.85))}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(cfg.label, 0, 1);
+    }
+
     ctx.restore();
   }
+
   function drawObjects() {
     for (const o of objects) {
       const sy = o.y - cameraY + Math.sin((o.t || 0) * 3) * 3;
@@ -774,6 +822,7 @@ const Game = (() => {
       }
     }
   }
+
   function drawFloaters() {
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
     for (const f of floaters) {
@@ -783,6 +832,13 @@ const Game = (() => {
       ctx.restore();
     }
   }
+
+  // SkinArt pode ser declarado com const/let global (não vira window.SkinArt), então checamos os dois jeitos
+  function drawSkin() {
+    const sa = (typeof SkinArt !== "undefined") ? SkinArt : window.SkinArt;
+    if (sa && typeof sa.draw === "function") sa.draw(ctx, equippedSkin, globalTime);
+  }
+
   function drawPlayer() {
     const sy = player.y - cameraY;
     ctx.save(); ctx.translate(player.x, sy);
@@ -795,9 +851,10 @@ const Game = (() => {
       ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, 28 + Math.sin(globalTime * 6) * 3, 0, Math.PI * 2); ctx.stroke();
     }
     if (player.umbrella) { ctx.save(); ctx.translate(0, -46); ctx.scale(0.9, 0.9); drawUmbrellaGraphic(); ctx.restore(); }
-    SkinArt.draw(ctx, equippedSkin, globalTime);
+    drawSkin();
     ctx.restore();
   }
+
   function draw() {
     ctx.save();
     if (shake > 0) ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
@@ -807,10 +864,13 @@ const Game = (() => {
     }
     if (gameState === "playing" || gameState === "gameover") drawPlayer();
     else {
-      ctx.save(); ctx.translate(W / 2, 430); ctx.scale(1.4, 1.4); SkinArt.draw(ctx, equippedSkin, globalTime); ctx.restore();
+      ctx.save(); ctx.translate(W / 2, 430); ctx.scale(1.4, 1.4);
+      drawSkin();
+      ctx.restore();
     }
     ctx.restore();
   }
+
   function loop(now) {
     const dt = Math.min((now - lastTime) / 1000, 0.033);
     lastTime = now;
@@ -840,7 +900,12 @@ const Game = (() => {
     },
     getPhase() { return startHeight; },
     isPlaying() { return gameState === "playing"; },
-    setCoinCountry(id) { if (!COIN_COUNTRIES.includes(id)) return; coinCountry = id; try { localStorage.setItem("skyCountry", id); } catch (e) {} },
+    setCoinCountry(id) {
+      if (!COIN_COUNTRIES.includes(id)) return;
+      coinCountry = id;
+      try { localStorage.setItem("skyCountry", id); } catch (e) {}
+      updateCoinUI();
+    },
     getCoinCountry() { return coinCountry; }
   };
 })();
