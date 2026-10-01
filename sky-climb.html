@@ -1,453 +1,177 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Sky Climb</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body, html {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #0a0814;
-      color: #fff;
-    }
-
-    #app {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      background: #120e24;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* Canvas do Jogo */
-    #game-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      background: linear-gradient(to bottom, #0f0c1b, #1a1528);
-    }
-
-    /* Overlay de HUD em Jogo */
-    .hud {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .hud-box {
-      background: rgba(10, 8, 20, 0.65);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Menu de Navegação Inferior (Rail) */
-    .rail {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 65px;
-      background: rgba(15, 12, 27, 0.92);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 20;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-
-    .nav-ico {
-      background: none;
-      border: none;
-      color: #7a7593;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: color 0.2s, transform 0.1s;
-      width: 20%;
-    }
-
-    .nav-ico svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .nav-ico.active, .nav-ico:hover {
-      color: #9d4edd;
-    }
-
-    .nav-ico:active {
-      transform: scale(0.92);
-    }
-
-    /* Painéis Deslizantes (Sheets) */
-    .sheet {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 65px;
-      background: rgba(18, 14, 36, 0.95);
-      backdrop-filter: blur(16px);
-      z-index: 15;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.2s;
-    }
-
-    .sheet.hidden {
-      transform: translateY(100%);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .sheet-back {
-      align-self: flex-start;
-      background: rgba(255, 255, 255, 0.08);
-      border: none;
-      color: #ccc;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      margin-bottom: 12px;
-      cursor: pointer;
-    }
-
-    .sheet h3 {
-      font-size: 22px;
-      margin-bottom: 4px;
-      color: #fff;
-    }
-
-    .sheet .lede {
-      font-size: 12px;
-      color: #9a94b8;
-      margin-bottom: 16px;
-    }
-
-    /* Botão Principal Orb */
-    .start-orb {
-      background: linear-gradient(135deg, #7b2cbf, #9d4edd);
-      border: none;
-      color: #fff;
-      font-weight: 800;
-      font-size: 16px;
-      padding: 14px 28px;
-      border-radius: 30px;
-      box-shadow: 0 4px 20px rgba(157, 78, 221, 0.4);
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      text-align: center;
-    }
-
-    .start-orb:active {
-      transform: scale(0.96);
-    }
-
-    /* Grid de Skins */
-    .skins-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding-bottom: 20px;
-    }
-
-    .skin-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      text-align: center;
-      position: relative;
-    }
-
-    .skin-card.equipped {
-      border-color: #9d4edd;
-      background: rgba(157, 78, 221, 0.12);
-    }
-
-    .skin-card canvas {
-      width: 70px;
-      height: 70px;
-      border-radius: 12px;
-    }
-
-    .skin-card .name {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .skin-card .rarity {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #c77dff;
-    }
-
-    .skin-card button {
-      width: 100%;
-      padding: 6px;
-      border-radius: 8px;
-      border: none;
-      background: #7b2cbf;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .skin-card button.equipped-btn {
-      background: rgba(255, 255, 255, 0.1);
-      color: #aaa;
-      cursor: default;
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
-<body>
-
-  <div id="app">
-    <!-- HUD -->
-    <div class="hud">
-      <div class="hud-box" id="hud-score">🏆 0</div>
-      <div class="hud-box" id="hud-coins">🪙 <span id="coin-count">0</span></div>
-    </div>
-
-    <!-- Tela do Jogo -->
-    <canvas id="game-canvas"></canvas>
-
-    <!-- Menu de Navegação -->
-    <nav class="rail">
-      <button type="button" class="nav-ico active" data-sheet="menu" onclick="Sky.open('menu')">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        <span>Jogar</span>
-      </button>
-
-      <button type="button" class="nav-ico" data-sheet="skins" onclick="Sky.open('skins')">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/></svg>
-        <span>Skins</span>
-      </button>
-
-      <!-- NOVO BOTÃO DE SALAS -->
-      <button type="button" class="nav-ico" data-sheet="salas" onclick="Sky.open('salas')">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 13a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
-        <span>Salas</span>
-      </button>
-
-      <button type="button" class="nav-ico" data-sheet="ranks" onclick="Sky.open('ranks')">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11V3H8v8H2v10h20V11h-6z"/></svg>
-        <span>Rank</span>
-      </button>
-
-      <button type="button" class="nav-ico" data-sheet="settings" onclick="Sky.open('settings')">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-        <span>Ajustes</span>
-      </button>
-    </nav>
-
-    <!-- SHEET: MENU PRINCIPAL -->
-    <div class="sheet" id="sheet-menu">
-      <div style="margin: auto 0; text-align: center;">
-        <h1 style="font-size: 36px; font-weight: 900; margin-bottom: 8px; background: linear-gradient(135deg, #fff, #c77dff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SKY CLIMB</h1>
-        <p class="lede">Salte de plataforma em plataforma e alcance as alturas!</p>
-        <button class="start-orb" style="width: 100%; margin-top: 20px;" onclick="Sky.startGame()">JOGAR AGORA</button>
+<body class="phone">
+  <div class="stage-wrap solo">
+    <div class="game-panel menu">
+      <div class="hud">
+        <div class="hud-chip"><div class="lbl">Altura</div><div class="val" id="height-val">0m</div></div>
+        <div class="hud-chip"><div class="lbl">Moedas</div><div class="val coin" id="coin-val">R$ 0,00</div></div>
+        <div class="hud-chip"><div class="lbl">Multiplicador</div><div class="val" id="mult-val">1.00x</div></div>
       </div>
-    </div>
+      <div class="ghost-chip" id="ghost-chip"></div>
+      <div class="hunt-bar" id="hunt-bar"><div class="hunt-fill" id="hunt-fill"></div></div>
+      <div class="combo-hud" id="combo-hud" hidden>
+        <div class="combo-x" id="combo-x">x2</div>
+        <div class="combo-l">combo</div>
+      </div>
+      <div class="toast" id="game-toast"></div>
+      <canvas id="gameCanvas" width="400" height="700"></canvas>
 
-    <!-- SHEET: SKINS -->
-    <div class="sheet hidden" id="sheet-skins" hidden>
-      <button type="button" class="sheet-back" onclick="Sky.back()">‹ Menu</button>
-      <h3>Skins & Trajes</h3>
-      <p class="lede">Escolha o seu visual preferido para a subida.</p>
-      <div class="skins-grid" id="skins-container"></div>
-    </div>
+      <div class="overlay hub" id="hub-overlay">
+        <div class="hub-bar">
+          <div class="hub-name">
+            <input id="player-name" maxlength="18" placeholder="Nome">
+            <small id="hub-phase-label">Fase: Superfície</small>
+            <select id="player-country" aria-label="País" style="margin-top:4px;background:rgba(255,255,255,.08);color:inherit;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:3px 6px;font:inherit;font-size:12px">
+              <option value="br">🇧🇷 Brasil</option>
+              <option value="co">🇨🇴 Colômbia</option>
+              <option value="pe">🇵🇪 Peru</option>
+              <option value="mx">🇲🇽 México</option>
+              <option value="ar">🇦🇷 Argentina</option>
+            </select>
+          </div>
+          <div class="hub-money">
+            <span id="wallet-coins">R$ 0,00</span>
+            <span id="wallet-best">0m</span>
+            <span id="points-display">0 pts</span>
+          </div>
+        </div>
 
-    <!-- SHEET: SALAS DE CUIDADO (POU/TAMAGOTCHI) -->
-    <div class="sheet hidden" id="sheet-salas" hidden>
-      <button type="button" class="sheet-back" onclick="Sky.back()">‹ Menu</button>
-      <h3>Salas de Cuidado</h3>
-      <p class="lede">Mantenha a sua personagem feliz e saudável para obter bônus!</p>
-      
-      <div style="background: rgba(0,0,0,0.3); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05);">
-        <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:14px;">
-          <span>🍎 Fome</span><strong id="care-val-fome">100%</strong>
+        <div class="hub-home" id="hub-home">
+          <h2 id="hub-title">Sky Climb</h2>
+          <p class="hook-copy" id="hook-copy">Uma a mais. Sempre uma a mais.</p>
+          <div class="result-row hidden" id="hub-results">
+            <div class="result-item"><div class="lbl">Altura</div><div class="val" id="final-height">0m</div></div>
+            <div class="result-item"><div class="lbl">Moedas</div><div class="val coin" id="final-coins">0</div></div>
+            <div class="result-item"><div class="lbl">Pontos</div><div class="val" id="final-points">+0</div></div>
+          </div>
+
+          <div class="hub-stage" aria-label="Menu">
+            <nav class="rail">
+              <button type="button" class="nav-ico" data-sheet="fases" onclick="Sky.open('fases')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l8-4 8 4v2l-8-4-8 4v-2z"/><path d="M4 13l8-4 8 4v2l-8-4-8 4v-2z"/><path d="M4 8l8-4 8 4v2l-8-4-8 4V8z"/></svg>
+                <span>Fases</span>
+              </button>
+              <button type="button" class="nav-ico" data-sheet="skins" onclick="Sky.open('skins')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10.5c0-2.2 1.8-4 4-4s4 1.8 4 4"/><path d="M6.2 13.2c.9 3 3.1 5.3 5.8 5.3s4.9-2.3 5.8-5.3"/><path d="M9.2 13.8c.4.9 1.5 1.5 2.8 1.5s2.4-.6 2.8-1.5"/><circle cx="9.2" cy="11.2" r=".7"/><circle cx="14.8" cy="11.2" r=".7"/></svg>
+                <span>Skins</span>
+              </button>
+              <button type="button" class="nav-ico" data-sheet="world" onclick="Sky.open('world')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 3.8c2.2 2.1 3.4 5 3.4 8.2S14.2 18.1 12 20.2C9.8 18.1 8.6 15.2 8.6 12S9.8 5.9 12 3.8z"/><path d="M4 12h16"/></svg>
+                <span>Mundo</span>
+              </button>
+            </nav>
+
+            <button type="button" class="start-orb" id="start-btn" onclick="Sky.play()">MAIS UMA</button>
+
+            <nav class="rail">
+              <button type="button" class="nav-ico" data-sheet="ranks" onclick="Sky.open('ranks')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h8v3a4 4 0 01-8 0V5z"/><path d="M8 5H5.8A1.8 1.8 0 004 6.8V8a3 3 0 003 3h1"/><path d="M16 5h2.2A1.8 1.8 0 0120 6.8V8a3 3 0 01-3 3h-1"/><path d="M12 12v3"/><path d="M8.5 20h7L14 15h-4L8.5 20z"/></svg>
+                <span>Rank</span>
+              </button>
+              <button type="button" class="nav-ico" data-sheet="salas" onclick="Sky.open('salas')">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 13a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+                <span>Salas</span>
+              </button>
+              <button type="button" class="nav-ico" id="sound-toggle">
+                <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5v3h3l4 3.5V7L7 10.5H4z"/><path d="M15.2 9.2a4 4 0 010 5.6"/><path d="M17.4 7a7 7 0 010 10"/></svg>
+                <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5v3h3l4 3.5V7L7 10.5H4z"/><path d="M16 9l5 6M21 9l-5 6"/></svg>
+                <span id="sound-label">Som</span>
+              </button>
+            </nav>
+          </div>
+          <p class="hub-hint">Arraste · setas · incline o aparelho</p>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:14px;">
-          <span>🧼 Higiene</span><strong id="care-val-banho">100%</strong>
+
+        <div class="sheet hidden" id="sheet-fases" hidden>
+          <button type="button" class="sheet-back" data-back onclick="Sky.back()">‹ Menu</button>
+          <h3>Fases</h3>
+          <p class="lede">Escolha o bioma. Os bloqueados abrem com o recorde.</p>
+          <div class="world-list" id="phase-list"></div>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:14px;">
-          <span>💤 Energia</span><strong id="care-val-energia">100%</strong>
+
+        <div class="sheet hidden" id="sheet-skins" hidden>
+          <button type="button" class="sheet-back" data-back onclick="Sky.back()">‹ Menu</button>
+          <h3>Skins</h3>
+          <p class="lede">Tudo grátis por agora. Toque e veste na hora.</p>
+          <div class="poster mini">
+            <canvas id="poster-canvas" width="640" height="280"></canvas>
+            <div class="caption" id="poster-cap">Panda Clássico</div>
+          </div>
+          <div class="skin-grid" id="skin-grid"></div>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:14px;">
-          <span>🎾 Felicidade</span><strong id="care-val-felicidade">100%</strong>
+
+        <div class="sheet hidden" id="sheet-salas" hidden>
+          <button type="button" class="sheet-back" data-back onclick="Sky.back()">‹ Menu</button>
+          <h3>Salas de Cuidado</h3>
+          <p class="lede">Cuide do seu personagem para mantê-lo com energia total!</p>
+          <div style="background: rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:13px;">
+              <span>🍎 Fome</span><strong id="care-val-fome">100%</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:13px;">
+              <span>🧼 Higiene</span><strong id="care-val-banho">100%</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:13px;">
+              <span>💤 Energia</span><strong id="care-val-energia">100%</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom: 8px; font-size:13px;">
+              <span>🎾 Felicidade</span><strong id="care-val-felicidade">100%</strong>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button type="button" class="start-orb" style="font-size:12px; padding: 12px; width:100%" onclick="CareSystem.feed()">🍎 Cozinha</button>
+            <button type="button" class="start-orb" style="font-size:12px; padding: 12px; width:100%" onclick="CareSystem.wash()">🧼 Banho</button>
+            <button type="button" class="start-orb" style="font-size:12px; padding: 12px; width:100%" onclick="CareSystem.sleep()">💤 Quarto</button>
+            <button type="button" class="start-orb" style="font-size:12px; padding: 12px; width:100%" onclick="CareSystem.play()">🎾 Brincar</button>
+          </div>
+        </div>
+
+        <div class="sheet hidden" id="sheet-ranks" hidden>
+          <button type="button" class="sheet-back" data-back onclick="Sky.back()">‹ Menu</button>
+          <h3>Ranking</h3>
+          <div class="ranks" id="ranks"></div>
+        </div>
+
+        <div class="sheet hidden" id="sheet-world" hidden>
+          <button type="button" class="sheet-back" data-back onclick="Sky.back()">‹ Menu</button>
+          <h3>Ecossistema</h3>
+          <div class="world-list" id="world-list"></div>
         </div>
       </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button type="button" class="start-orb" style="font-size:12px; padding: 12px;" onclick="CareSystem.feed()">🍎 Cozinha</button>
-        <button type="button" class="start-orb" style="font-size:12px; padding: 12px;" onclick="CareSystem.wash()">🧼 Banho</button>
-        <button type="button" class="start-orb" style="font-size:12px; padding: 12px;" onclick="CareSystem.sleep()">💤 Quarto</button>
-        <button type="button" class="start-orb" style="font-size:12px; padding: 12px;" onclick="CareSystem.play()">🎾 Brincar</button>
-      </div>
-    </div>
-
-    <!-- SHEET: RANKS -->
-    <div class="sheet hidden" id="sheet-ranks" hidden>
-      <button type="button" class="sheet-back" onclick="Sky.back()">‹ Menu</button>
-      <h3>Classificação</h3>
-      <p class="lede">Os maiores escaladores do Sky Climb.</p>
-      <p style="text-align: center; color: #7a7593; margin-top: 40px;">Em breve...</p>
-    </div>
-
-    <!-- SHEET: DEFINIÇÕES -->
-    <div class="sheet hidden" id="sheet-settings" hidden>
-      <button type="button" class="sheet-back" onclick="Sky.back()">‹ Menu</button>
-      <h3>Ajustes</h3>
-      <p class="lede">Opções de som e controle.</p>
-      <p style="text-align: center; color: #7a7593; margin-top: 40px;">Sons e Efeitos: Ativados</p>
     </div>
   </div>
 
-  <!-- INCLUSÃO DOS SCRIPTS EXTERNOS -->
-  <script src="skins.js"></script>
-  <script src="care.js"></script>
-
-  <!-- LÓGICA DO JOGO E CONTROLADOR DE TELAS -->
   <script>
-    const Sky = (() => {
-      let currentSkin = localStorage.getItem("sky_active_skin") || "panda";
-      let coins = parseInt(localStorage.getItem("sky_coins") || "0", 10);
-
-      function updateCoins(val) {
-        coins += val;
-        localStorage.setItem("sky_coins", coins);
-        document.getElementById("coin-count").textContent = coins;
-      }
-
-      function renderSkinsList() {
-        const container = document.getElementById("skins-container");
-        if (!container || !window.SkinArt) return;
-        container.innerHTML = "";
-
-        SkinArt.CATALOG.forEach(skin => {
-          const card = document.createElement("div");
-          const isEquipped = skin.id === currentSkin;
-          card.className = `skin-card ${isEquipped ? 'equipped' : ''}`;
-
-          const cvs = document.createElement("canvas");
-          cvs.width = 100;
-          cvs.height = 100;
-
-          const title = document.createElement("div");
-          title.className = "name";
-          title.textContent = skin.name;
-
-          const rarity = document.createElement("div");
-          rarity.className = "rarity";
-          rarity.textContent = skin.rarity;
-
-          const btn = document.createElement("button");
-          btn.textContent = isEquipped ? "Equipado" : "Equipar";
-          if (isEquipped) btn.className = "equipped-btn";
-
-          btn.onclick = () => {
-            currentSkin = skin.id;
-            localStorage.setItem("sky_active_skin", currentSkin);
-            renderSkinsList();
-          };
-
-          card.appendChild(cvs);
-          card.appendChild(title);
-          card.appendChild(rarity);
-          card.appendChild(btn);
-          container.appendChild(card);
-
-          SkinArt.paintThumb(cvs, skin.id);
-        });
-      }
-
-      function openSheet(id) {
-        document.querySelectorAll(".sheet").forEach(s => {
-          s.classList.add("hidden");
-          s.hidden = true;
-        });
-        document.querySelectorAll(".nav-ico").forEach(n => n.classList.remove("active"));
-
-        const target = document.getElementById(`sheet-${id}`);
-        if (target) {
-          target.classList.remove("hidden");
-          target.hidden = false;
-        }
-
-        const btn = document.querySelector(`.nav-ico[data-sheet="${id}"]`);
-        if (btn) btn.classList.add("active");
-
-        if (id === "skins") renderSkinsList();
-      }
-
-      function backToMenu() {
-        openSheet("menu");
-      }
-
-      function startGame() {
-        document.querySelectorAll(".sheet").forEach(s => {
-          s.classList.add("hidden");
-          s.hidden = true;
-        });
-        // Iniciar loop de física e jogo aqui
-      }
-
-      return {
-        open: openSheet,
-        back: backToMenu,
-        startGame,
-        getSkin: () => currentSkin,
-        addCoins: updateCoins
-      };
+    window.__skyErrs = [];
+    window.onerror = function (m, s, l) { window.__skyErrs.push(String(m) + " @" + s + ":" + l); };
+    window.Sky = {
+      play() { if (window.Game) window.Game.play(); },
+      open() {},
+      back() {}
+    };
+  </script>
+  <script src="audio.js?v=10"></script>
+  <script src="skins.js?v=10"></script>
+  <script src="coin-art.js?v=1"></script>
+  <script src="care.js"></script>
+  <script src="game.js?v=11"></script>
+  <script src="app.js?v=10"></script>
+  <script>
+    (function () {
+      var sel = document.getElementById("player-country");
+      if (!sel || !window.Game) return;
+      sel.value = Game.getCoinCountry();
+      sel.addEventListener("change", function () { Game.setCoinCountry(sel.value); });
     })();
-
-    document.addEventListener("DOMContentLoaded", () => {
-      Sky.open("menu");
-      Sky.addCoins(0);
-    });
   </script>
 </body>
 </html>
