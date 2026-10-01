@@ -168,7 +168,7 @@ const Game = (() => {
     p.drift = p.type === TYPES.MOVE ? 55 + Math.random() * 70 : 0;
     p.dir = Math.random() < 0.5 ? 1 : -1;
     p.hasCoin = Math.random() < (0.1 + (fever ? 0.06 : 0));
-    p.coinY = p.y - 55; // Ajustado para flutuar acima da moeda maior
+    p.coinY = p.y - 55;
     if (p.hasCoin) p.coinType = pickCoinType();
     p.jackpot = Math.random() < 0.05;
   }
@@ -276,8 +276,6 @@ const Game = (() => {
     const gap = recordM - meters;
     const near = !brokePB && recordM > 0 && gap > 0 && gap <= 12;
     if (near) {
-      const pity = 40 + (12 - gap) * 8;
-      addCoins(pity);
       gained += 80;
       AudioKit.near();
     } else if (brokePB) AudioKit.record();
@@ -357,7 +355,7 @@ const Game = (() => {
             player.magnet = 7; AudioKit.magnet(); toast("ÍMÃ");
             spawnBurst(o.x, o.y, 14, ["#7ad0ff", "#fff"], { spread: 180, upBias: 80, life: 0.5, size: 3 });
           } else {
-            AudioKit.gem(); addCoins(80, o.x, o.y); bumpShake(3); toast("GEMA");
+            AudioKit.gem(); bumpShake(3); toast("GEMA");
             spawnBurst(o.x, o.y, 16, ["#b388ff", "#fff", "#ffe27a"], { spread: 200, upBias: 120, life: 0.55, size: 3.4 });
           }
           objects.splice(i, 1);
@@ -401,11 +399,10 @@ const Game = (() => {
           comboT = 1.25;
           setCombo(combo + 1);
           AudioKit.combo(combo);
-          if (perfect) { AudioKit.perfect(); addCoins(15, player.x, p.y); floatText(player.x, p.y - 18, "PERFEITO", "#fff6c2"); bumpShake(4); }
+          if (perfect) { AudioKit.perfect(); floatText(player.x, p.y - 18, "PERFEITO", "#fff6c2"); bumpShake(4); }
           else bumpShake(combo >= 8 ? 3 : 1.6);
           if (p.jackpot) {
             p.jackpot = false;
-            addCoins(180, player.x, p.y);
             AudioKit.jackpot();
             toast("JACKPOT");
             bumpShake(5);
@@ -436,7 +433,7 @@ const Game = (() => {
           const pull = Math.hypot(player.x - cx, player.y - p.coinY);
           if (pull < 160) { p.coinY += (player.y - p.coinY) * dt * 8; p.x += ((player.x - p.w / 2) - p.x) * dt * 3; }
         }
-        if (Math.hypot(player.x - (p.x + p.w / 2), player.y - p.coinY) < 65) { // Distância de coleta aumentada para 65
+        if (Math.hypot(player.x - (p.x + p.w / 2), player.y - p.coinY) < 65) {
           const cfg = COIN_TYPES[p.coinType] || COIN_TYPES.real1;
           p.hasCoin = false; addCoins(cfg.value, p.x + p.w / 2, p.coinY); AudioKit.collect();
           spawnBurst(p.x + p.w / 2, p.coinY, 12, cfg.burst, { spread: 160, upBias: 70, life: 0.5, size: 2.8 });
@@ -737,6 +734,15 @@ const Game = (() => {
       ctx.fillStyle = cfg.tone === "gold" ? goldGrad(r) : silverGrad(r); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
     }
     ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.ellipse(-r * 0.3, -r * 0.35, r * 0.26, r * 0.15, -0.5, 0, Math.PI * 2); ctx.fill();
+
+    if (!spr) {
+      ctx.fillStyle = cfg.bimetal ? "#1a1a1a" : (cfg.tone === "gold" ? "#4a3300" : "#222c35");
+      ctx.font = `900 ${Math.round(r * (cfg.label.length > 2 ? 0.65 : 0.85))}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(cfg.label, 0, 1);
+    }
+
     ctx.restore();
   }
   function drawObjects() {
