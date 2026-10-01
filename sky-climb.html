@@ -30,6 +30,13 @@
           <div class="hub-name">
             <input id="player-name" maxlength="18" placeholder="Nome">
             <small id="hub-phase-label">Fase: Superfície</small>
+            <select id="player-country" aria-label="País" style="margin-top:4px;background:rgba(255,255,255,.08);color:inherit;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:3px 6px;font:inherit;font-size:12px">
+              <option value="br">🇧🇷 Brasil</option>
+              <option value="co">🇨🇴 Colômbia</option>
+              <option value="pe">🇵🇪 Peru</option>
+              <option value="mx">🇲🇽 México</option>
+              <option value="ar">🇦🇷 Argentina</option>
+            </select>
           </div>
           <div class="hub-money">
             <span id="wallet-coins">R$ 0,00</span>
@@ -121,7 +128,16 @@
   </script>
   <script src="audio.js?v=10"></script>
   <script src="skins.js?v=10"></script>
-  <script src="game.js?v=10"></script>
+  <script src="coin-art.js?v=1"></script>
+  <script src="game.js?v=11"></script>
   <script src="app.js?v=10"></script>
+  <script>
+    (function () {
+      var sel = document.getElementById("player-country");
+      if (!sel || !window.Game) return;
+      sel.value = Game.getCoinCountry();
+      sel.addEventListener("change", function () { Game.setCoinCountry(sel.value); });
+    })();
+  </script>
 </body>
 </html>
